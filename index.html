@@ -21,7 +21,6 @@
             --color-mango: #FFA26D;
             --color-avatar-bg: #C0E0FF;
             
-            /* AI 品牌代表色 */
             --color-gemini: #1A73E8; 
             --color-claude: #D97756; 
         }
@@ -37,7 +36,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 40px;
+            padding-bottom: 80px;
         }
         .header {
             font-family: 'Noto Serif JP', "Hiragino Mincho ProN", "MS Mincho", serif;
@@ -68,7 +67,7 @@
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 16px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 12px rgba(129, 165, 222, 0.08);
         }
         .post-box textarea {
@@ -99,79 +98,70 @@
         .post-btn-container {
             display: flex;
             justify-content: flex-end;
+            gap: 8px;
             border-top: 1px solid #f5f5f5;
             padding-top: 12px;
             margin-top: 5px;
         }
-        .post-btn {
+        .btn-base {
             font-family: inherit;
-            background-color: var(--color-mango);
-            color: white;
             border: none;
             border-radius: 20px;
-            padding: 8px 20px;
+            padding: 8px 16px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(255, 162, 109, 0.4);
             letter-spacing: 0.5px;
         }
-        .post-btn:active {
-            opacity: 0.9;
+        .draft-btn {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .post-btn {
+            background-color: var(--color-mango);
+            color: white;
+            box-shadow: 0 2px 6px rgba(255, 162, 109, 0.4);
+        }
+        .btn-base:active {
+            opacity: 0.8;
         }
 
-        /* 備份按鈕區塊 */
-        .backup-container {
-            margin-bottom: 18px;
-            padding: 0 4px;
+        /* 草稿顯示區 */
+        .draft-container {
+            display: none;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 16px;
         }
-        .backup-toggle {
+        .draft-title {
             font-size: 12px;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: #6c757d;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .draft-item {
+            font-size: 14px;
+            color: #333;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            word-break: break-all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .draft-clear {
+            color: #ff5c5c;
+            font-size: 11px;
+            padding: 4px;
             background: none;
             border: none;
             cursor: pointer;
-            padding: 4px 0;
-            display: inline-flex;
-            align-items: center;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        .backup-menu {
-            display: none;
-            background: #fdfdfd;
-            border: 1px dashed #ced4da;
-            border-radius: 12px;
-            padding: 10px;
-            margin-top: 6px;
-            gap: 8px;
-            flex-direction: column;
-        }
-        .backup-menu-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .backup-btn {
-            font-family: inherit;
-            flex: 1;
-            min-width: 120px;
-            background: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: center;
-            color: #555;
-        }
-        .backup-btn:active {
-            background: #f1f3f5;
-        }
-        .backup-label-btn {
-            display: inline-block;
-            margin: 0;
         }
 
         /* 動態牆 */
@@ -230,7 +220,7 @@
             line-height: 1.75;
             white-space: pre-wrap;
             word-break: break-all;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             color: #2c2c2c;
             padding: 0 2px;
             letter-spacing: 0.8px;
@@ -240,7 +230,7 @@
             display: flex;
             gap: 10px; 
             flex-wrap: wrap;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             border-top: 1px solid #f8f8f8;
             padding-top: 12px;
         }
@@ -259,23 +249,39 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.1s;
         }
         .action-btn:active {
-            transform: scale(0.97);
+            opacity: 0.8;
         }
         .btn-gemini {
             background: var(--color-gemini);
             color: white;
-            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.15);
         }
         .btn-claude {
             background: var(--color-claude);
             color: white;
-            box-shadow: 0 2px 8px rgba(217, 119, 86, 0.15);
         }
 
+        /* 留言回覆感摺疊區塊 */
+        .comment-style-toggle {
+            font-size: 13px;
+            color: #6d7a1c;
+            background: #f4f6ec;
+            border: none;
+            border-radius: 12px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        .comment-style-toggle:active {
+            background: #e9edd3;
+        }
         .correction-box {
+            display: none; 
             background-color: #fafbfc;
             border-left: 4px solid var(--color-lime);
             padding: 12px 14px;
@@ -283,11 +289,13 @@
             border-top: 1px solid #f0f2f5;
             border-right: 1px solid #f0f2f5;
             border-bottom: 1px solid #f0f2f5;
+            margin-top: 6px;
+            margin-bottom: 4px;
         }
         .correction-title {
             font-weight: 700;
             color: #6d7a1c;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 6px;
             letter-spacing: 0.5px;
         }
@@ -309,12 +317,57 @@
             border: none;
             color: #ff5c5c;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             padding: 0;
-            margin-top: 14px;
+            margin-top: 8px;
             margin-left: 4px;
-            opacity: 0.7;
+            opacity: 0.6;
             font-weight: 500;
+        }
+
+        /* 頁尾資料管理區 */
+        .footer-manage {
+            margin-top: 40px;
+            border-top: 1px dashed #ced4da;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .backup-toggle {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .backup-menu {
+            display: none;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px;
+            margin-top: 10px;
+            gap: 8px;
+            flex-direction: column;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .backup-menu-row {
+            display: flex;
+            gap: 8px;
+        }
+        .backup-btn {
+            font-family: inherit;
+            flex: 1;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #495057;
         }
     </style>
 </head>
@@ -323,31 +376,40 @@
 <div class="header">ひとりごと</div>
 
 <div class="container">
-    <div class="post-box">
-        <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..."></textarea>
-        <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
-        <div class="post-btn-container">
-            <button class="post-btn" onclick="addPost()">投稿する</button>
+    <div id="draftArea" class="draft-container">
+        <div class="draft-title">下書き（草稿）</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <div id="draftContent" class="draft-item" onclick="loadDraft()" style="flex:1;"></div>
+            <button class="draft-clear" onclick="clearDraft()">削除</button>
         </div>
     </div>
 
-    <div class="backup-container">
-        <button class="backup-toggle" onclick="toggleBackupMenu()">データ管理</button>
-        <div id="backupMenu" class="backup-menu">
-            <div class="backup-menu-row">
-                <button class="backup-btn" onclick="exportJSON()">💾 備份日記 (匯出 JSON 檔)</button>
-                <label class="backup-btn backup-label-btn" style="display: flex; align-items: center; justify-content: center;">
-                    🔄 還原日記 (匯入 JSON 檔)
-                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJSON(this)">
-                </label>
-            </div>
-            <div class="backup-menu-row">
-                <button class="backup-btn" onclick="exportCSV()">📊 導出為 Excel/CSV 表格</button>
-            </div>
+    <div class="post-box">
+        <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..." oninput="autoSaveDraft()"></textarea>
+        <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
+        <div class="post-btn-container">
+            <button class="btn-base draft-btn" onclick="manualSaveDraft()">下書き保存</button>
+            <button class="btn-base post-btn" onclick="addPost()">投稿する</button>
         </div>
     </div>
 
     <div id="postFeed" class="feed"></div>
+
+    <div class="footer-manage">
+        <button class="backup-toggle" onclick="toggleBackupMenu()">データ管理</button>
+        <div id="backupMenu" class="backup-menu">
+            <div class="backup-menu-row">
+                <button class="backup-btn" onclick="exportJSON()">備份日記 (匯出 JSON 檔)</button>
+                <label class="backup-btn" style="display: flex; align-items: center; justify-content: center; margin:0;">
+                    還原日記 (匯入 JSON 檔)
+                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJSON(this)">
+                </label>
+            </div>
+            <div class="backup-menu-row">
+                <button class="backup-btn" onclick="exportCSV()">導出為 Excel/CSV 表格</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -358,8 +420,70 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         loadPosts();
+        checkDraft();
         getLiveWeatherAndLocation();
     });
+
+    /* 草稿系統功能 */
+    function autoSaveDraft() {
+        const content = document.getElementById("postInput").value;
+        if(content.trim() !== "") {
+            localStorage.setItem("jp_diary_draft", content);
+        } else {
+            localStorage.removeItem("jp_diary_draft");
+        }
+    }
+
+    function manualSaveDraft() {
+        const content = document.getElementById("postInput").value.trim();
+        if (!content) {
+            alert("請輸入內容後再存為草稿。");
+            return;
+        }
+        localStorage.setItem("jp_diary_draft", content);
+        checkDraft();
+        alert("草稿已儲存！");
+    }
+
+    function checkDraft() {
+        const draft = localStorage.getItem("jp_diary_draft");
+        const draftArea = document.getElementById("draftArea");
+        if (draft && draft.trim() !== "") {
+            draftArea.style.display = "block";
+            document.getElementById("draftContent").innerText = draft.length > 25 ? draft.substring(0, 25) + "..." : draft;
+        } else {
+            draftArea.style.display = "none";
+        }
+    }
+
+    function loadDraft() {
+        const draft = localStorage.getItem("jp_diary_draft");
+        if (draft) {
+            document.getElementById("postInput").value = draft;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function clearDraft() {
+        if(confirm("確定要刪除這則草稿嗎？")) {
+            localStorage.removeItem("jp_diary_draft");
+            document.getElementById("postInput").value = "";
+            checkDraft();
+        }
+    }
+
+    /* 摺疊切換功能 */
+    function toggleCorrection(postId) {
+        const box = document.getElementById(`box-${postId}`);
+        const btn = document.getElementById(`btn-${postId}`);
+        if (box.style.display === "block") {
+            box.style.display = "none";
+            btn.innerText = "添削・学習メモ";
+        } else {
+            box.style.display = "block";
+            btn.innerText = "折りたたむ (收起)";
+        }
+    }
 
     function toggleBackupMenu() {
         const menu = document.getElementById("backupMenu");
@@ -430,7 +554,9 @@
         posts.unshift(post);
         localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
 
+        localStorage.removeItem("jp_diary_draft");
         document.getElementById("postInput").value = "";
+        checkDraft();
         renderPosts();
     }
 
@@ -466,13 +592,17 @@
                     <button class="action-btn btn-claude" onclick="goToAI('claude', \`${encodeURIComponent(promptText)}\`)">自然な表現に (Claude)</button>
                 </div>
 
-                <div class="correction-box">
+                <button id="btn-${post.id}" class="comment-style-toggle" onclick="toggleCorrection(${post.id})">添削・学習メモ</button>
+
+                <div id="box-${post.id}" class="correction-box">
                     <div class="correction-title">添削・学習メモ</div>
                     <div class="correction-content" contenteditable="true" onblur="saveCorrection(${post.id}, this.innerText)" placeholder="タップして添削結果やメモを記入...">
                         ${post.correction || ""}
                     </div>
                 </div>
-                <button class="delete-btn" onclick="deletePost(${post.id})">削除する</button>
+                <div>
+                    <button class="delete-btn" onclick="deletePost(${post.id})">削除する</button>
+                </div>
             `;
             feed.appendChild(postEl);
         });
@@ -480,20 +610,19 @@
 
     function goToAI(aiType, encodedText) {
         const text = decodeURIComponent(encodedText);
-        let targetUrl = "https://gemini.google.com/";
-        let aiName = "Gemini";
-
-        if (aiType === 'claude') {
-            targetUrl = "https://claude.ai/";
-            aiName = "Claude";
+        
+        if (aiType === 'gemini') {
+            const geminiUrl = `https://gemini.google.com/app?prompt=${encodeURIComponent(text)}`;
+            window.open(geminiUrl, "_blank");
+        } else if (aiType === 'claude') {
+            const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(text)}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                window.open(claudeUrl, "_blank");
+            }).catch(() => {
+                window.open(claudeUrl, "_blank");
+            });
         }
-
-        navigator.clipboard.writeText(text).then(() => {
-            alert(`添削プロンプトをコピーしました。\n${aiName}を開きますので、そのまま貼り付けて送信してください。`);
-            window.open(targetUrl, "_blank");
-        }).catch(err => {
-            window.open(targetUrl, "_blank");
-        });
     }
 
     function saveCorrection(postId, text) {
@@ -514,7 +643,6 @@
         }
     }
 
-    /* 💾 匯出備份 JSON 檔 */
     function exportJSON() {
         const posts = localStorage.getItem("jp_sns_posts") || "[]";
         const blob = new Blob([posts], { type: "application/json" });
@@ -528,7 +656,6 @@
         URL.revokeObjectURL(url);
     }
 
-    /* 🔄 匯入備份 JSON 檔 */
     function importJSON(input) {
         const file = input.files[0];
         if (!file) return;
@@ -541,7 +668,7 @@
                     if (confirm("匯入備份會覆蓋目前手機內的日記紀錄，確定要繼續嗎？")) {
                         localStorage.setItem("jp_sns_posts", JSON.stringify(importedPosts));
                         renderPosts();
-                        alert("🎉 日記還原成功！");
+                        alert("還原日記成功！");
                     }
                 } else {
                     alert("錯誤的檔案格式，無法還原。");
@@ -554,7 +681,6 @@
         input.value = ""; 
     }
 
-    /* 📊 導出成 CSV */
     function exportCSV() {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         if (posts.length === 0) {
@@ -584,6 +710,7 @@
         URL.revokeObjectURL(url);
     }
 
+    UX-friendly escapeHtml helper
     function escapeHtml(text) {
         return text
             .replace(/&/g, "&amp;")
