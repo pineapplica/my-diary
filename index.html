@@ -134,8 +134,8 @@
             padding: 4px 0;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
             font-weight: 500;
+            letter-spacing: 0.5px;
         }
         .backup-menu {
             display: none;
@@ -332,7 +332,7 @@
     </div>
 
     <div class="backup-container">
-        <button class="backup-toggle" onclick="toggleBackupMenu()">⚙️ 資料備份與匯出選單</button>
+        <button class="backup-toggle" onclick="toggleBackupMenu()">データ管理</button>
         <div id="backupMenu" class="backup-menu">
             <div class="backup-menu-row">
                 <button class="backup-btn" onclick="exportJSON()">💾 備份日記 (匯出 JSON 檔)</button>
@@ -496,109 +496,4 @@
         });
     }
 
-    function saveCorrection(postId, text) {
-        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        const index = posts.findIndex(p => p.id === postId);
-        if (index !== -1) {
-            posts[index].correction = text;
-            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
-        }
-    }
-
-    function deletePost(postId) {
-        if(confirm("この日記を削除してもよろしいですか？")) {
-            let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-            posts = posts.filter(p => p.id !== postId);
-            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
-            renderPosts();
-        }
-    }
-
-    /* 💾 匯出備份 JSON 檔 */
-    function exportJSON() {
-        const posts = localStorage.getItem("jp_sns_posts") || "[]";
-        const blob = new Blob([posts], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `diary_backup_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    /* 🔄 匯入備份 JSON 檔 */
-    function importJSON(input) {
-        const file = input.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const importedPosts = JSON.parse(e.target.result);
-                if (Array.isArray(importedPosts)) {
-                    if (confirm("匯入備份會覆蓋目前手機內的日記紀錄，確定要繼續嗎？")) {
-                        localStorage.setItem("jp_sns_posts", JSON.stringify(importedPosts));
-                        renderPosts();
-                        alert("🎉 日記還原成功！");
-                    }
-                } else {
-                    alert("錯誤的檔案格式，無法還原。");
-                }
-            } catch (err) {
-                alert("讀取檔案時發生錯誤。");
-            }
-        };
-        reader.readAsText(file);
-        input.value = ""; // 清空 input 讓同一個檔案可以重複選取
-    }
-
-    /* 📊 導出成 CSV (支援 Excel 開啟的 UTF-8 BOM 格式) */
-    function exportCSV() {
-        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        if (posts.length === 0) {
-            alert("目前還沒有任何日記可以導出喔！");
-            return;
-        }
-
-        // CSV 欄位標頭
-        let csvContent = "\uFEFF"; // 加入 UTF-8 BOM，確保 Excel 開啟不亂碼
-        csvContent += "日期時間,天氣與地點,日記原文,添削・學習紀錄\n";
-
-        posts.forEach(post => {
-            // 清理文字，防止換行和雙引號破壞 CSV 結構
-            const cleanContent = post.content.replace(/"/g, '""');
-            const cleanCorrection = (post.correction || "").replace(/"/g, '""');
-            const cleanWeather = (post.weather || "").replace(/"/g, '""');
-
-            csvContent += `"${post.time}","${cleanWeather}","${cleanContent}","${cleanCorrection}"\n`;
-        });
-
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `my_japanese_diary_${new Date().toISOString().slice(0,10)}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    function escapeHtml(text) {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-    
-    function loadPosts() {
-        renderPosts();
-    }
-</script>
-
-</body>
-</html>
+    function saveCorrection(
