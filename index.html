@@ -496,4 +496,107 @@
         });
     }
 
-    function saveCorrection(
+    function saveCorrection(postId, text) {
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const index = posts.findIndex(p => p.id === postId);
+        if (index !== -1) {
+            posts[index].correction = text;
+            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
+        }
+    }
+
+    function deletePost(postId) {
+        if(confirm("この日記を削除してもよろしいですか？")) {
+            let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+            posts = posts.filter(p => p.id !== postId);
+            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
+            renderPosts();
+        }
+    }
+
+    /* 💾 匯出備份 JSON 檔 */
+    function exportJSON() {
+        const posts = localStorage.getItem("jp_sns_posts") || "[]";
+        const blob = new Blob([posts], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `diary_backup_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /* 🔄 匯入備份 JSON 檔 */
+    function importJSON(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedPosts = JSON.parse(e.target.result);
+                if (Array.isArray(importedPosts)) {
+                    if (confirm("匯入備份會覆蓋目前手機內的日記紀錄，確定要繼續嗎？")) {
+                        localStorage.setItem("jp_sns_posts", JSON.stringify(importedPosts));
+                        renderPosts();
+                        alert("🎉 日記還原成功！");
+                    }
+                } else {
+                    alert("錯誤的檔案格式，無法還原。");
+                }
+            } catch (err) {
+                alert("讀取檔案時發生錯誤。");
+            }
+        };
+        reader.readAsText(file);
+        input.value = ""; 
+    }
+
+    /* 📊 導出成 CSV */
+    function exportCSV() {
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        if (posts.length === 0) {
+            alert("目前還沒有任何日記可以導出喔！");
+            return;
+        }
+
+        let csvContent = "\uFEFF"; 
+        csvContent += "日期時間,天氣與地點,日記原文,添削・學習紀錄\n";
+
+        posts.forEach(post => {
+            const cleanContent = post.content.replace(/"/g, '""');
+            const cleanCorrection = (post.correction || "").replace(/"/g, '""');
+            const cleanWeather = (post.weather || "").replace(/"/g, '""');
+
+            csvContent += `"${post.time}","${cleanWeather}","${cleanContent}","${cleanCorrection}"\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `my_japanese_diary_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+    
+    function loadPosts() {
+        renderPosts();
+    }
+</script>
+
+</body>
+</html>
