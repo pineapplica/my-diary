@@ -59,7 +59,7 @@
             background: none; border: none; font-size: 22px; cursor: pointer; color: #4a4a4a; padding: 0 4px;
         }
         
-        /* 側邊選單外殼 */
+        /* 側邊選單 */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.08);
@@ -145,11 +145,12 @@
         .ai-btn-gemini { background: #e8f0fe; color: var(--color-gemini); }
         .ai-btn-claude { background: #fdf2ee; color: var(--color-claude); }
 
-        /* 留言區系統 */
+        /* 留言區系統與限高防爆樣式 */
         .comments-container { display: flex; flex-direction: column; gap: 10px; }
         .comment-node {
             background-color: #fafbfc; border-left: 4px solid var(--border-color);
             padding: 10px 12px; border-radius: 0 14px 14px 0; border: 1px solid #f0f2f5;
+            position: relative;
         }
         .comment-node.node-gemini { border-left: 4px solid var(--color-gemini); }
         .comment-node.node-claude { border-left: 4px solid var(--color-claude); }
@@ -161,17 +162,30 @@
         .user-gemini { color: var(--color-gemini); }
         .user-claude { color: var(--color-claude); }
         
-        .comment-content { font-size: 14px; color: #444; line-height: 1.6; white-space: pre-wrap; }
+        /* 內文防爆控制 */
+        .comment-content { font-size: 14px; color: #444; line-height: 1.6; white-space: pre-wrap; overflow: hidden; }
+        .comment-content.collapsed {
+            max-height: 110px; /* 大約 4~5 行的高度 */
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        .more-toggle-btn {
+            background: none; border: none; color: var(--text-muted); font-size: 11px;
+            font-weight: 700; padding: 4px 0 0 0; cursor: pointer; display: block; margin-top: 4px;
+        }
+        .more-toggle-btn:hover { color: var(--color-mango); }
+
         .comment-textarea {
-            width: 100%; height: 70px; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 6px; font-size: 13px; resize: none; outline: none; font-family: inherit;
+            width: 100%; height: 90px; border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 8px; font-size: 13px; resize: none; outline: none; font-family: inherit;
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="width:24px;"></div> <div>ひとりごと</div>
+    <div style="width:24px;"></div>
+    <div>ひとりごと</div>
     <button class="menu-trigger" onclick="toggleSidebar(true)">三</button>
 </div>
 
@@ -219,7 +233,7 @@
     </div>
 
     <div class="sidebar-section" style="border:none; margin-top:auto; padding-top:20px; text-align:center; font-size:11px; color:var(--text-muted);">
-        バージョン：v2.5.0<br>最終更新：2026/06/10
+        バージョン：v2.6.0<br>最終更新：2026/06/10
     </div>
 </div>
 
@@ -283,7 +297,7 @@
     function checkDraft() { const d = localStorage.getItem("jp_diary_draft"); const area = document.getElementById("draftArea"); if (d && d.trim()) { area.style.display = "block"; document.getElementById("draftContent").innerText = d.length > 25 ? d.substring(0, 25) + "..." : d; } else { area.style.display = "none"; } }
     function loadDraft() { document.getElementById("postInput").value = localStorage.getItem("jp_diary_draft"); }
 
-    /* 編輯日記原文功能 */
+    /* 編輯日記功能 */
     function editPost(postId) {
         const contentBox = document.getElementById(`content-${postId}`);
         const currentText = contentBox.innerText;
@@ -314,7 +328,7 @@
         btn.innerText = isBlock ? "添削・学習メモ" : "折りたたむ";
     }
 
-    /* 處理 AI 留言與鎖定系統 */
+    /* 處理 AI 留言與限制器 */
     function requestAICorrection(aiType, postId, rawContent) {
         const container = document.getElementById(`comments-container-${postId}`);
         let node = document.getElementById(`comment-${aiType}-${postId}`);
@@ -327,9 +341,11 @@
         }
         container.insertBefore(node, container.firstChild);
 
-        const promptText = `請幫我批改這段日文日記。請指出不自然的地方、文法錯誤，並提供修正建議與更道地的表達方式：\n\n「${decodeURIComponent(rawContent)}」`;
+        // 從源頭下指令給 AI 限制格式
+        const promptText = `請幫我批改這段日文日記。請指出不自然的地方、文法錯誤，並提供修正建議與更道地的表達方式：\n\n「${decodeURIComponent(rawContent)}」\n\n⚠️【重要格式限制】：請提供精簡明瞭的解析即可。如果需要對比或列出重點，請一律使用『條列式項目（* 或 -）』與換行來呈現，絕對不要使用 Markdown 表格，以免我的排版歪掉。`;
+        
         navigator.clipboard.writeText(promptText).then(() => {
-            alert("提示詞已自動複製！請在跳出的視窗中直接貼上送出。");
+            alert("提示詞已內建「防爆防表格指令」並複製！請直接貼上送出。");
             window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
         }).catch(() => {
             window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
@@ -376,14 +392,24 @@
         setupCommentEditing(node, postId, aiType, currentVal);
     }
 
+    /* 智慧切換展開/摺疊狀態 */
+    function toggleCommentLength(postId, aiType) {
+        const textEl = document.getElementById(`text-target-${aiType}-${postId}`);
+        const btnEl = document.getElementById(`btn-toggle-${aiType}-${postId}`);
+        if(textEl.classList.contains("collapsed")) {
+            textEl.classList.remove("collapsed");
+            btnEl.innerText = "閉じる（收起）";
+        } else {
+            textEl.classList.add("collapsed");
+            btnEl.innerText = "続きを読む（展開全文）";
+        }
+    }
+
     /* 搜尋文章邏輯 */
     function searchPosts(keyword) {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const k = keyword.toLowerCase().trim();
-        const feed = document.getElementById("postFeed");
-        
         if(!k) { renderPosts(); return; }
-        
         const filtered = posts.filter(p => p.content.toLowerCase().includes(k));
         renderFeedList(filtered);
     }
@@ -490,42 +516,17 @@
             let commentsHtml = "";
             const order = post.commentOrder || [];
             
-            // 渲染已鎖定發布的留言 (無 Emoji，品牌色)
+            // 處理與組合留言內容
             order.forEach(aiType => {
                 const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
                 if(!val) return;
-                const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
-                commentsHtml += `
-                    <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
-                        <div class="comment-user-bar">
-                            <div style="display:flex; align-items:center;">
-                                <div class="comment-avatar avatar-${aiType}"></div>
-                                <span class="comment-username user-${aiType}">${label}</span>
-                            </div>
-                            <span class="action-link" style="font-size:11px;" onclick="unlockComment(${post.id}, '${aiType}', \`${encodeURIComponent(val)}\`)">編集</span>
-                        </div>
-                        <div class="comment-content">${escapeHtml(val).replace(/\n/g, '<br>')}</div>
-                    </div>
-                `;
+                commentsHtml += buildCommentNodeHtml(post.id, aiType, val);
             });
 
-            // 捕捉未記錄在排序中的舊資料
             ['gemini', 'claude'].forEach(aiType => {
                 if (!order.includes(aiType) && post.aiComments && post.aiComments[aiType]) {
                     const val = post.aiComments[aiType];
-                    const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
-                    commentsHtml = `
-                        <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
-                            <div class="comment-user-bar">
-                                <div style="display:flex; align-items:center;">
-                                    <div class="comment-avatar avatar-${aiType}"></div>
-                                    <span class="comment-username user-${aiType}">${label}</span>
-                                </div>
-                                <span class="action-link" style="font-size:11px;" onclick="unlockComment(${post.id}, '${aiType}', \`${encodeURIComponent(val)}\`)">編集</span>
-                            </div>
-                            <div class="comment-content">${escapeHtml(val).replace(/\n/g, '<br>')}</div>
-                        </div>
-                    ` + commentsHtml;
+                    commentsHtml = buildCommentNodeHtml(post.id, aiType, val) + commentsHtml;
                 }
             });
 
@@ -559,6 +560,28 @@
             `;
             feed.appendChild(postEl);
         });
+    }
+
+    /* 建立帶有自動限高摺疊功能的留言 HTML 結構 */
+    function buildCommentNodeHtml(postId, aiType, val) {
+        const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
+        const needsCollapse = val.length > 150; // 超過 150 字啟動智慧摺疊
+        const collapseClass = needsCollapse ? "collapsed" : "";
+        const toggleBtnHtml = needsCollapse ? `<button id="btn-toggle-${aiType}-${postId}" class="more-toggle-btn" onclick="toggleCommentLength(${postId}, '${aiType}')">続きを読む（展開全文）</button>` : "";
+
+        return `
+            <div id="comment-${aiType}-${postId}" class="comment-node node-${aiType}">
+                <div class="comment-user-bar">
+                    <div style="display:flex; align-items:center;">
+                        <div class="comment-avatar avatar-${aiType}"></div>
+                        <span class="comment-username user-${aiType}">${label}</span>
+                    </div>
+                    <span class="action-link" style="font-size:11px;" onclick="unlockComment(${postId}, '${aiType}', \`${encodeURIComponent(val)}\`)">編集</span>
+                </div>
+                <div class="comment-content ${collapseClass}" id="text-target-${aiType}-${postId}">${escapeHtml(val).replace(/\n/g, '<br>')}</div>
+                ${toggleBtnHtml}
+            </div>
+        `;
     }
 
     /* 備份系統與工具 */
