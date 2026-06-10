@@ -4,102 +4,853 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ひとりごと</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        :root { --bg: #FDF8F4; --card: #ffffff; --text: #333; --mango: #FFA26D; --lime: #D2E767; --gemini: #1A73E8; --claude: #D97756; }
-        body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
-        .header { font-family: 'Noto Serif JP', serif; font-weight: 700; text-align: center; padding: 20px; border-bottom: 2px solid var(--mango); }
-        .container { max-width: 600px; margin: 0 auto; padding: 14px; }
-        .post-box { background: var(--card); border-radius: 20px; padding: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        textarea { width: 100%; height: 100px; border: none; font-size: 16px; resize: none; outline: none; }
-        .btn { border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; color: white; margin-top: 10px; }
-        .post-btn { background: var(--mango); width: 100%; }
-        .post { background: var(--card); border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid #eee; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #C0E0FF; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; }
-        .meta-info { font-size: 12px; color: #7e7e7e; }
-        .comment-box { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
-        .ai-reply { display: flex; align-items: flex-start; margin-top: 10px; padding: 10px; border-radius: 15px; background: #f9f9f9; }
-        .ai-avatar { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
-        .filter-section { background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #ddd; }
+        :root {
+            --bg-color: #FDF8F4;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #7e7e7e;
+            --border-color: #E2E9F3;
+            
+            --color-lime: #D2E767;
+            --color-mango: #FFA26D;
+            --color-avatar-bg: #C0E0FF;
+            
+            --color-gemini: #1A73E8; 
+            --color-claude: #D97756; 
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 100px;
+        }
+        .header {
+            font-family: 'Noto Serif JP', serif;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            background: rgba(253, 248, 244, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--color-mango);
+            padding: 16px;
+            text-align: center;
+            font-size: 20px;
+            color: #4a4a4a;
+            z-index: 100;
+            letter-spacing: 3px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 14px;
+        }
+        
+        /* 按鈕基本樣式 */
+        .btn-base {
+            font-family: inherit;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        .btn-base:active {
+            opacity: 0.8;
+        }
+
+        /* 發文區 */
+        .post-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(129, 165, 222, 0.08);
+        }
+        .post-box textarea {
+            width: 100%;
+            height: 100px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 16px;
+            resize: none;
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+        }
+        .post-box textarea:focus {
+            outline: none;
+        }
+        .post-box textarea::placeholder {
+            color: #ccc;
+        }
+        
+        .weather-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+        
+        .post-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            border-top: 1px solid #f5f5f5;
+            padding-top: 12px;
+            margin-top: 5px;
+        }
+        .draft-btn {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .post-btn {
+            background-color: var(--color-mango);
+            color: white;
+            box-shadow: 0 2px 6px rgba(255, 162, 109, 0.4);
+        }
+
+        /* 日期篩選區塊 */
+        .filter-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(129, 165, 222, 0.04);
+        }
+        .filter-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4a4a4a;
+            margin-bottom: 8px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-input {
+            font-family: inherit;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px 10px;
+            font-size: 12px;
+            outline: none;
+            color: var(--text-color);
+        }
+        .filter-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .summary-box {
+            display: none;
+            background: #fafbfc;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        .summary-content {
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #eef2f7;
+            margin-bottom: 8px;
+        }
+
+        /* 草稿顯示區 */
+        .draft-container {
+            display: none;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        .draft-item {
+            font-size: 14px;
+            color: #333;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 動態牆 */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .post {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(129, 165, 222, 0.05);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--color-avatar-bg);
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px; 
+            border: 1px solid var(--border-color);
+        }
+        .post-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .username {
+            font-weight: 700;
+            font-size: 15px;
+            color: #444;
+        }
+        .meta-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            display: flex;
+            gap: 8px;
+        }
+        .post-content {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 16px;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 14px;
+            color: #2c2c2c;
+        }
+        
+        /* 摺疊啟動按鈕 */
+        .comment-style-toggle {
+            font-family: inherit;
+            font-size: 13px;
+            color: #6d7a1c;
+            background: #f4f6ec;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 700;
+            display: inline-flex;
+            margin-top: 8px;
+        }
+
+        /* 展開後的整合面板 */
+        .interactive-panel {
+            display: none;
+            margin-top: 12px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+        }
+
+        /* AI 模型選擇區 */
+        .ai-selector-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .ai-select-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .ai-mini-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+        .ai-btn-gemini { background: #e8f0fe; color: var(--color-gemini); }
+        .ai-btn-claude { background: #fdf2ee; color: var(--color-claude); }
+
+        /* 留言板動態排序容器 */
+        .comments-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* 模擬社群留言樣式 (無 Emoji) */
+        .comment-node {
+            background-color: #fafbfc;
+            border-left: 4px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 0 14px 14px 0;
+            border-top: 1px solid #f0f2f5;
+            border-right: 1px solid #f0f2f5;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .comment-node.node-gemini { border-left-color: var(--color-gemini); }
+        .comment-node.node-claude { border-left-color: var(--color-claude); }
+
+        .comment-user-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .comment-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .avatar-gemini { background-color: var(--color-gemini); }
+        .avatar-claude { background-color: var(--color-claude); }
+        
+        .comment-username {
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .user-gemini { color: var(--color-gemini); }
+        .user-claude { color: var(--color-claude); }
+
+        .comment-content {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 24px;
+            outline: none;
+        }
+        .comment-content[placeholder]:empty:before {
+            content: attr(placeholder);
+            color: #b0b0b0;
+        }
+
+        .delete-btn {
+            font-family: inherit;
+            background: none;
+            border: none;
+            color: #ff5c5c;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 0;
+            margin-top: 12px;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+
+        /* 頁尾資料管理區 (統一按鈕風格) */
+        .footer-manage {
+            margin-top: 50px;
+            border-top: 1px dashed #ced4da;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .backup-toggle {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .backup-menu {
+            display: none;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 12px;
+            gap: 10px;
+            flex-direction: column;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .backup-menu-row {
+            display: flex;
+            gap: 8px;
+        }
+        .backup-action-btn {
+            flex: 1;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">ひとりごと</div>
+
 <div class="container">
-    <div class="filter-section">
-        <div style="font-size: 13px; margin-bottom: 8px;">日期篩選統整</div>
-        <input type="date" id="startDate"> 至 <input type="date" id="endDate">
-        <button onclick="filterPosts()" style="margin-left:5px;">篩選</button>
+    <div id="draftArea" class="draft-container">
+        <div style="font-size: 12px; font-weight: 700; color: #6c757d; margin-bottom: 6px;">下書き</div>
+        <div id="draftContent" class="draft-item" onclick="loadDraft()"></div>
     </div>
 
     <div class="post-box">
-        <textarea id="postInput" placeholder="今日の日記を書きましょう..."></textarea>
-        <button class="btn post-btn" onclick="addPost()">投稿する</button>
+        <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..." oninput="autoSaveDraft()"></textarea>
+        <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
+        <div class="post-btn-container">
+            <button class="btn-base draft-btn" onclick="manualSaveDraft()">下書き保存</button>
+            <button class="btn-base post-btn" onclick="addPost()">投稿する</button>
+        </div>
     </div>
 
-    <div id="postFeed"></div>
+    <div class="filter-container">
+        <div class="filter-title">期間指定で統整（指定期間統整）</div>
+        <div class="filter-row">
+            <input type="date" id="filterStart" class="filter-input">
+            <span style="font-size:12px; color:var(--text-muted);">至</span>
+            <input type="date" id="filterEnd" class="filter-input">
+            <button class="btn-base post-btn" style="padding: 6px 14px; font-size:12px; border-radius:12px;" onclick="generateSummary()">統整</button>
+        </div>
+        <div id="summaryBox" class="summary-box">
+            <div id="summaryContent" class="summary-content"></div>
+            <button class="btn-base draft-btn" style="font-size:11px; padding:4px 10px; border-radius:8px;" onclick="copySummary()">複製統整內容</button>
+        </div>
+    </div>
+
+    <div id="postFeed" class="feed"></div>
+
+    <div class="footer-manage">
+        <button class="backup-toggle" onclick="toggleBackupMenu()">データ管理</button>
+        <div id="backupMenu" class="backup-menu">
+            <div class="backup-menu-row">
+                <button class="btn-base backup-action-btn" onclick="exportJSON()">備份日記 (匯出 JSON 檔)</button>
+                <label class="btn-base backup-action-btn" style="display: flex; align-items: center; justify-content: center; margin:0;">
+                    還原日記 (匯入 JSON 檔)
+                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJSON(this)">
+                </label>
+            </div>
+            <div class="backup-menu-row">
+                <button class="btn-base backup-action-btn" onclick="exportCSV()">導出為 Excel/CSV 表格</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    const USER_AVATAR = "🌷";
-    
-    function addPost() {
-        const content = document.getElementById("postInput").value;
+    const USER_NAME = "リカ"; 
+    const USER_AVATAR = "🌷"; 
+
+    let currentWeatherData = "位置情報オフ";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadPosts();
+        checkDraft();
+        getLiveWeatherAndLocation();
+    });
+
+    function autoSaveDraft() {
+        localStorage.setItem("jp_diary_draft", document.getElementById("postInput").value);
+    }
+
+    function manualSaveDraft() {
+        const content = document.getElementById("postInput").value.trim();
         if (!content) return;
-        const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-        posts.unshift({ id: Date.now(), content, time: new Date().toISOString().split('T')[0], correction: "", reply: null });
-        localStorage.setItem("posts", JSON.stringify(posts));
+        localStorage.setItem("jp_diary_draft", content);
+        checkDraft();
+        alert("草稿已儲存！");
+    }
+
+    function checkDraft() {
+        const draft = localStorage.getItem("jp_diary_draft");
+        const draftArea = document.getElementById("draftArea");
+        if (draft && draft.trim() !== "") {
+            draftArea.style.display = "block";
+            document.getElementById("draftContent").innerText = draft.length > 25 ? draft.substring(0, 25) + "..." : draft;
+        } else {
+            draftArea.style.display = "none";
+        }
+    }
+
+    function loadDraft() {
+        document.getElementById("postInput").value = localStorage.getItem("jp_diary_draft");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* 點擊展開面板 */
+    function toggleInteractivePanel(postId) {
+        const panel = document.getElementById(`panel-${postId}`);
+        const btn = document.getElementById(`toggle-btn-${postId}`);
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+            btn.innerText = "添削・学習メモ";
+        } else {
+            panel.style.display = "block";
+            btn.innerText = "折りたたむ";
+        }
+    }
+
+    /* 處理 AI 呼叫與動態留言置頂 */
+    function requestAICorrection(aiType, postId, rawContent) {
+        const container = document.getElementById(`comments-container-${postId}`);
+        
+        // 尋找或創建該 AI 的留言框
+        let node = document.getElementById(`comment-${aiType}-${postId}`);
+        if (!node) {
+            node = document.createElement("div");
+            node.id = `comment-${aiType}-${postId}`;
+            node.className = `comment-node node-${aiType}`;
+            
+            const labelName = aiType === 'gemini' ? 'Gemini' : 'Claude';
+            node.innerHTML = `
+                <div class="comment-user-bar">
+                    <div class="comment-avatar avatar-${aiType}"></div>
+                    <span class="comment-username user-${aiType}">${labelName}</span>
+                </div>
+                <div class="comment-content" contenteditable="true" onblur="saveCommentData(${postId}, '${aiType}', this.innerText)" placeholder="ここに添削結果やメモを貼り付け・記入..."></div>
+            `;
+        }
+
+        // 移至最上方 (置頂)
+        container.insertBefore(node, container.firstChild);
+
+        // 複製提示詞並開啟網頁
+        const promptText = `請幫我批改這段日文日記。請指出不自然的地方、文法錯誤，並提供修正建議與更道地的表達方式：\n\n「${decodeURIComponent(rawContent)}」`;
+        
+        navigator.clipboard.writeText(promptText).then(() => {
+            alert("提示詞已自動複製！請在跳出的視窗中直接貼上送出。");
+            const targetUrl = aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/";
+            window.open(targetUrl, "_blank");
+        }).catch(() => {
+            const targetUrl = aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/";
+            window.open(targetUrl, "_blank");
+        });
+    }
+
+    function saveCommentData(postId, aiType, text) {
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const index = posts.findIndex(p => p.id === postId);
+        if (index !== -1) {
+            if (!posts[index].aiComments) posts[index].aiComments = {};
+            posts[index].aiComments[aiType] = text;
+            
+            // 記錄最後點擊/排序順序
+            if (!posts[index].commentOrder) posts[index].commentOrder = [];
+            posts[index].commentOrder = posts[index].commentOrder.filter(x => x !== aiType);
+            posts[index].commentOrder.unshift(aiType);
+
+            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
+        }
+    }
+
+    /* 日期篩選與統整邏輯 */
+    function generateSummary() {
+        const start = document.getElementById("filterStart").value;
+        const end = document.getElementById("filterEnd").value;
+        if (!start || !end) {
+            alert("請選擇完整的開始與結束日期。");
+            return;
+        }
+
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const startTime = new Date(start).setHours(0,0,0,0);
+        const endTime = new Date(end).setHours(23,59,59,999);
+
+        // 篩選出符合時間範圍的日記
+        const filtered = posts.filter(p => {
+            return p.id >= startTime && p.id <= endTime;
+        });
+
+        const summaryBox = document.getElementById("summaryBox");
+        const summaryContent = document.getElementById("summaryContent");
+
+        if (filtered.length === 0) {
+            summaryContent.innerText = "該期間內沒有任何日記紀錄。";
+            summaryBox.style.display = "block";
+            return;
+        }
+
+        let summaryText = `【指定期間日文日記統整報告】\n期間：${start} ~ ${end}\n總篇數：${filtered.length} 篇\n\n`;
+        filtered.forEach((p, idx) => {
+            summaryText += `--- 篇章 ${idx + 1} (${p.time}) ---\n`;
+            summaryText += `【原文】：\n${p.content}\n`;
+            if (p.aiComments) {
+                if (p.aiComments.gemini) summaryText += `【Gemini 學習筆記】:\n${p.aiComments.gemini}\n`;
+                if (p.aiComments.claude) summaryText += `【Claude 學習筆記】:\n${p.aiComments.claude}\n`;
+            }
+            summaryText += `\n`;
+        });
+
+        summaryContent.innerText = summaryText;
+        summaryBox.style.display = "block";
+    }
+
+    function copySummary() {
+        const text = document.getElementById("summaryContent").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("統整內容已成功複製到剪貼簿！可以拿去交給 AI 進行全方位分析囉。");
+        });
+    }
+
+    function toggleBackupMenu() {
+        const menu = document.getElementById("backupMenu");
+        menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+    }
+
+    function getLiveWeatherAndLocation() {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            try {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                const temp = Math.round(weatherData.current_weather.temperature);
+                const weatherText = translateWeatherCode(weatherData.current_weather.weathercode);
+
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ja`);
+                const geoData = await geoRes.json();
+                const address = geoData.address;
+                const locationName = address.city || address.town || address.suburb || "現在地";
+
+                currentWeatherData = `${weatherText} ${temp}°C / ${locationName}`;
+                document.getElementById("weatherDisplay").innerText = currentWeatherData;
+            } catch (e) {
+                document.getElementById("weatherDisplay").innerText = "位置情報オフ";
+            }
+        }, () => {
+            document.getElementById("weatherDisplay").innerText = "位置情報オフ";
+        });
+    }
+
+    function translateWeatherCode(code) {
+        if (code === 0) return "晴れ";
+        if ([1, 2, 3].includes(code)) return "晴れのちくもり";
+        if ([45, 48].includes(code)) return "霧";
+        if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return "雨";
+        if ([71, 73, 75, 85, 86].includes(code)) return "雪";
+        return "くもり";
+    }
+
+    function addPost() {
+        const content = document.getElementById("postInput").value.trim();
+        if (!content) return;
+
+        const now = new Date();
+        const timestamp = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        const post = {
+            id: Date.now(),
+            time: timestamp,
+            weather: currentWeatherData, 
+            content: content,
+            aiComments: {},
+            commentOrder: []
+        };
+
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        posts.unshift(post);
+        localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
+
+        localStorage.removeItem("jp_diary_draft");
         document.getElementById("postInput").value = "";
+        checkDraft();
         renderPosts();
     }
 
     function renderPosts() {
-        const posts = JSON.parse(localStorage.getItem("posts") || "[]");
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const feed = document.getElementById("postFeed");
         feed.innerHTML = "";
-        posts.forEach(p => {
-            const div = document.createElement("div");
-            div.className = "post";
-            div.innerHTML = `
-                <div style="display:flex; align-items:center;">
-                    <div class="avatar">${USER_AVATAR}</div>
-                    <div class="meta-info"><div>リカ</div><div>${p.time}</div></div>
+
+        posts.forEach(post => {
+            const postEl = document.createElement("div");
+            postEl.className = "post";
+            const weatherString = post.weather ? `<span>${escapeHtml(post.weather)}</span>` : "";
+            const encodedContent = encodeURIComponent(post.content);
+
+            // 根據使用者的排序紀錄渲染留言
+            let commentsHtml = "";
+            const order = post.commentOrder || [];
+            
+            // 先渲染有排序紀錄的
+            order.forEach(aiType => {
+                const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
+                const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
+                commentsHtml += `
+                    <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
+                        <div class="comment-user-bar">
+                            <div class="comment-avatar avatar-${aiType}"></div>
+                            <span class="comment-username user-${aiType}">${label}</span>
+                        </div>
+                        <div class="comment-content" contenteditable="true" onblur="saveCommentData(${post.id}, '${aiType}', this.innerText)" placeholder="ここに添削結果やメモを貼り付け・記入...">${escapeHtml(val)}</div>
+                    </div>
+                `;
+            });
+
+            // 補上尚未觸發但可能有舊資料的 AI 留言框
+            ['gemini', 'claude'].forEach(aiType => {
+                if (!order.includes(aiType) && post.aiComments && post.aiComments[aiType]) {
+                    const val = post.aiComments[aiType];
+                    const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
+                    commentsHtml = `
+                        <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
+                            <div class="comment-user-bar">
+                                <div class="comment-avatar avatar-${aiType}"></div>
+                                <span class="comment-username user-${aiType}">${label}</span>
+                            </div>
+                            <div class="comment-content" contenteditable="true" onblur="saveCommentData(${post.id}, '${aiType}', this.innerText)" placeholder="ここに添削結果やメモを貼り付け・記入...">${escapeHtml(val)}</div>
+                        </div>
+                    ` + commentsHtml;
+                }
+            });
+
+            postEl.innerHTML = `
+                <div class="post-header">
+                    <div class="avatar"><span>${escapeHtml(USER_AVATAR)}</span></div>
+                    <div class="post-info">
+                        <span class="username">${escapeHtml(USER_NAME)}</span>
+                        <div class="meta-info">
+                            <span>${post.time}</span>
+                            ${weatherString}
+                        </div>
+                    </div>
                 </div>
-                <div style="margin: 15px 0;">${p.content}</div>
-                <button onclick="showAISelection(${p.id})" class="btn" style="background:#6d7a1c; font-size:12px;">添削・学習メモ</button>
-                <div id="ai-select-${p.id}" style="display:none; margin-top:10px;">
-                    <button onclick="askAI(${p.id}, 'gemini')" style="background:var(--gemini); color:white; border:none; padding:5px 10px; border-radius:5px;">Gemini 批改</button>
-                    <button onclick="askAI(${p.id}, 'claude')" style="background:var(--claude); color:white; border:none; padding:5px 10px; border-radius:5px;">Claude 批改</button>
+                <div class="post-content">${escapeHtml(post.content)}</div>
+                
+                <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">添削・学習メモ</button>
+
+                <div id="panel-${post.id}" class="interactive-panel">
+                    <div class="ai-selector-title">どちらのAIに頼みますか？（選擇批改模型）</div>
+                    <div class="ai-select-row">
+                        <button class="ai-mini-btn ai-btn-gemini" onclick="requestAICorrection('gemini', ${post.id}, '${encodedContent}')">Gemini</button>
+                        <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection('claude', ${post.id}, '${encodedContent}')">Claude</button>
+                    </div>
+                    <div id="comments-container-${post.id}" class="comments-container">
+                        ${commentsHtml}
+                    </div>
                 </div>
-                <div id="reply-${p.id}" class="comment-box"></div>
+
+                <div>
+                    <button class="delete-btn" onclick="deletePost(${post.id})">削除する</button>
+                </div>
             `;
-            feed.appendChild(div);
+            feed.appendChild(postEl);
         });
     }
 
-    function showAISelection(id) { document.getElementById(`ai-select-${id}`).style.display = 'block'; }
-
-    function askAI(id, model) {
-        const posts = JSON.parse(localStorage.getItem("posts"));
-        const p = posts.find(x => x.id == id);
-        const url = model === 'gemini' ? `https://gemini.google.com/app?prompt=${encodeURIComponent('請批改：'+p.content)}` : `https://claude.ai/new?q=${encodeURIComponent('請批改：'+p.content)}`;
-        window.open(url, '_blank');
-        // 模擬 AI 留言
-        document.getElementById(`reply-${id}`).innerHTML = `
-            <div class="ai-reply">
-                <div class="ai-avatar" style="background:${model==='gemini'?'var(--gemini)':'var(--claude)'}">${model.toUpperCase()}</div>
-                <div style="font-size:13px;">AI 正在為您批改，請至對話視窗查看結果。</div>
-            </div>`;
+    function deletePost(postId) {
+        if(confirm("確定要刪除這則日記嗎？")) {
+            let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+            posts = posts.filter(p => p.id !== postId);
+            localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
+            renderPosts();
+        }
     }
 
-    function filterPosts() {
-        const start = document.getElementById('startDate').value;
-        const end = document.getElementById('endDate').value;
-        alert(`已篩選 ${start} 至 ${end} 的紀錄（功能擴充中）`);
+    function exportJSON() {
+        const posts = localStorage.getItem("jp_sns_posts") || "[]";
+        const blob = new Blob([posts], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `diary_backup_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
-    renderPosts();
+    function importJSON(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedPosts = JSON.parse(e.target.result);
+                if (Array.isArray(importedPosts)) {
+                    if (confirm("匯入備份會覆蓋目前紀錄，確定要繼續嗎？")) {
+                        localStorage.setItem("jp_sns_posts", JSON.stringify(importedPosts));
+                        renderPosts();
+                        alert("還原日記成功！");
+                    }
+                } else {
+                    alert("檔案格式不符。");
+                }
+            } catch (err) {
+                alert("讀取檔案失敗。");
+            }
+        };
+        reader.readAsText(file);
+        input.value = ""; 
+    }
+
+    function exportCSV() {
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        if (posts.length === 0) {
+            alert("沒有日記紀錄可以導出。");
+            return;
+        }
+        let csvContent = "\uFEFF日期時間,天氣地點,日記原文\n";
+        posts.forEach(post => {
+            csvContent += `"${post.time}","${(post.weather || "")}","${post.content.replace(/"/g, '""')}"\n`;
+        });
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `my_diary_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 </script>
+
 </body>
 </html>
