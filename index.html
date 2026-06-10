@@ -111,10 +111,21 @@
         .post-btn-container {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             gap: 8px;
             border-top: 1px solid #f5f5f5;
             padding-top: 12px;
             margin-top: 5px;
+            flex-wrap: wrap;
+        }
+        .post-date-input {
+            font-family: inherit;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 5px 8px;
+            font-size: 12px;
+            color: var(--text-color);
+            outline: none;
         }
         .draft-btn {
             background-color: #e9ecef;
@@ -155,13 +166,6 @@
             font-size: 12px;
             outline: none;
             color: var(--text-color);
-        }
-        .filter-btn {
-            background-color: #6c757d;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 12px;
         }
         .summary-box {
             display: none;
@@ -376,7 +380,7 @@
             font-weight: 500;
         }
 
-        /* 頁尾資料管理區 (統一按鈕風格) */
+        /* 頁尾資料管理區 */
         .footer-manage {
             margin-top: 50px;
             border-top: 1px dashed #ced4da;
@@ -435,6 +439,8 @@
         <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..." oninput="autoSaveDraft()"></textarea>
         <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
         <div class="post-btn-container">
+            <span style="font-size:12px; color:var(--text-muted);">投稿日:</span>
+            <input type="date" id="postTargetDate" class="post-date-input">
             <button class="btn-base draft-btn" onclick="manualSaveDraft()">下書き保存</button>
             <button class="btn-base post-btn" onclick="addPost()">投稿する</button>
         </div>
@@ -480,6 +486,10 @@
     let currentWeatherData = "位置情報オフ";
 
     document.addEventListener("DOMContentLoaded", () => {
+        // 設定預設發文日期為今天
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById("postTargetDate").value = todayStr;
+        
         loadPosts();
         checkDraft();
         getLiveWeatherAndLocation();
@@ -513,7 +523,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* 點擊展開面板 */
     function toggleInteractivePanel(postId) {
         const panel = document.getElementById(`panel-${postId}`);
         const btn = document.getElementById(`toggle-btn-${postId}`);
@@ -526,11 +535,8 @@
         }
     }
 
-    /* 處理 AI 呼叫與動態留言置頂 */
     function requestAICorrection(aiType, postId, rawContent) {
         const container = document.getElementById(`comments-container-${postId}`);
-        
-        // 尋找或創建該 AI 的留言框
         let node = document.getElementById(`comment-${aiType}-${postId}`);
         if (!node) {
             node = document.createElement("div");
@@ -547,10 +553,8 @@
             `;
         }
 
-        // 移至最上方 (置頂)
         container.insertBefore(node, container.firstChild);
 
-        // 複製提示詞並開啟網頁
         const promptText = `請幫我批改這段日文日記。請指出不自然的地方、文法錯誤，並提供修正建議與更道地的表達方式：\n\n「${decodeURIComponent(rawContent)}」`;
         
         navigator.clipboard.writeText(promptText).then(() => {
@@ -570,7 +574,6 @@
             if (!posts[index].aiComments) posts[index].aiComments = {};
             posts[index].aiComments[aiType] = text;
             
-            // 記錄最後點擊/排序順序
             if (!posts[index].commentOrder) posts[index].commentOrder = [];
             posts[index].commentOrder = posts[index].commentOrder.filter(x => x !== aiType);
             posts[index].commentOrder.unshift(aiType);
@@ -579,7 +582,6 @@
         }
     }
 
-    /* 日期篩選與統整邏輯 */
     function generateSummary() {
         const start = document.getElementById("filterStart").value;
         const end = document.getElementById("filterEnd").value;
@@ -592,7 +594,7 @@
         const startTime = new Date(start).setHours(0,0,0,0);
         const endTime = new Date(end).setHours(23,59,59,999);
 
-        // 篩選出符合時間範圍的日記
+        // 依據貼文內部記錄的真實 ID 時間戳記做範圍篩選
         const filtered = posts.filter(p => {
             return p.id >= startTime && p.id <= endTime;
         });
@@ -624,7 +626,7 @@
     function copySummary() {
         const text = document.getElementById("summaryContent").innerText;
         navigator.clipboard.writeText(text).then(() => {
-            alert("統整內容已成功複製到剪貼簿！可以拿去交給 AI 進行全方位分析囉。");
+            alert("統整內容已成功複製到剪貼簿！");
         });
     }
 
@@ -672,24 +674,50 @@
         const content = document.getElementById("postInput").value.trim();
         if (!content) return;
 
-        const now = new Date();
-        const timestamp = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        // 讀取選定的發文日期
+        const targetDateVal = document.getElementById("postTargetDate").value;
+        const todayStr = new Date().toISOString().split('T')[0];
+        
+        let finalId = Date.now();
+        let timestamp = "";
+        let weatherInfo = currentWeatherData;
+
+        if (targetDateVal === todayStr) {
+            // 今天發文，保持原本的即時時間戳記
+            const now = new Date();
+            timestamp = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        } else {
+            // 過去日期補發
+            const parts = targetDateVal.split('-');
+            timestamp = `${parts[1]}/${parts[2]} 00:00`;
+            // 強制設定為指定日期的深夜/清晨時間戳，以便排序
+            const customDate = new Date(targetDateVal);
+            customDate.setHours(23, 59, 59, 999);
+            finalId = customDate.getTime();
+            weatherInfo = "過去の記録"; 
+        }
 
         const post = {
-            id: Date.now(),
+            id: finalId,
             time: timestamp,
-            weather: currentWeatherData, 
+            weather: weatherInfo, 
             content: content,
             aiComments: {},
             commentOrder: []
         };
 
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        posts.unshift(post);
+        posts.push(post);
+        
+        // 關鍵：依照 ID（時間戳記）由新到舊重新排序，確保插隊正確
+        posts.sort((a, b) => b.id - a.id);
+        
         localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
 
         localStorage.removeItem("jp_diary_draft");
         document.getElementById("postInput").value = "";
+        // 恢復預設日期為今天
+        document.getElementById("postTargetDate").value = todayStr;
         checkDraft();
         renderPosts();
     }
@@ -705,11 +733,9 @@
             const weatherString = post.weather ? `<span>${escapeHtml(post.weather)}</span>` : "";
             const encodedContent = encodeURIComponent(post.content);
 
-            // 根據使用者的排序紀錄渲染留言
             let commentsHtml = "";
             const order = post.commentOrder || [];
             
-            // 先渲染有排序紀錄的
             order.forEach(aiType => {
                 const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
                 const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
@@ -724,7 +750,6 @@
                 `;
             });
 
-            // 補上尚未觸發但可能有舊資料的 AI 留言框
             ['gemini', 'claude'].forEach(aiType => {
                 if (!order.includes(aiType) && post.aiComments && post.aiComments[aiType]) {
                     const val = post.aiComments[aiType];
@@ -757,7 +782,7 @@
                 <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">添削・学習メモ</button>
 
                 <div id="panel-${post.id}" class="interactive-panel">
-                    <div class="ai-selector-title">どちらのAIに頼みますか？（選擇批改模型）</div>
+                    <div class="ai-selector-title">どちらのAIに頼みますか？</div>
                     <div class="ai-select-row">
                         <button class="ai-mini-btn ai-btn-gemini" onclick="requestAICorrection('gemini', ${post.id}, '${encodedContent}')">Gemini</button>
                         <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection('claude', ${post.id}, '${encodedContent}')">Claude</button>
@@ -849,6 +874,10 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    }
+    
+    function loadPosts() {
+        renderPosts();
     }
 </script>
 
