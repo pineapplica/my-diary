@@ -59,7 +59,7 @@
             background: none; border: none; font-size: 22px; cursor: pointer; color: #4a4a4a; padding: 0 4px;
         }
         
-        /* 側邊選單 */
+        /* 側邊選單外殼 */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.08);
@@ -121,16 +121,21 @@
         .username { font-weight: 700; font-size: 15px; }
         .meta-info { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; margin-top: 2px; }
         
+        /* 內容與摺疊 */
         .post-content {
             font-family: 'Noto Serif JP', serif; font-size: 16px; line-height: 1.75;
-            white-space: pre-wrap; margin-bottom: 14px; color: #2c2c2c;
+            white-space: pre-wrap; margin-bottom: 6px; color: #2c2c2c;
         }
         .edit-textarea {
             width: 100%; height: 90px; border: 1px solid var(--color-mango);
             border-radius: 12px; padding: 8px; font-family: inherit; font-size: 15px; resize: none; outline: none;
         }
+        .readmore-btn {
+            background: none; border: none; color: var(--color-mango); font-size: 13px;
+            font-weight: 700; cursor: pointer; padding: 4px 0; margin-bottom: 10px; display: inline-block;
+        }
         
-        .post-action-bar { display: flex; gap: 12px; margin-top: 10px; font-size: 12px; color: var(--text-muted); }
+        .post-action-bar { display: flex; gap: 12px; margin-top: 4px; font-size: 12px; color: var(--text-muted); }
         .action-link { cursor: pointer; font-weight: 500; }
         .action-link:hover { color: var(--color-mango); }
 
@@ -145,39 +150,53 @@
         .ai-btn-gemini { background: #e8f0fe; color: var(--color-gemini); }
         .ai-btn-claude { background: #fdf2ee; color: var(--color-claude); }
 
-        /* 留言區系統與限高防爆樣式 */
+        /* 留言區與超級防變形表格系統 */
         .comments-container { display: flex; flex-direction: column; gap: 10px; }
         .comment-node {
             background-color: #fafbfc; border-left: 4px solid var(--border-color);
             padding: 10px 12px; border-radius: 0 14px 14px 0; border: 1px solid #f0f2f5;
-            position: relative;
         }
         .comment-node.node-gemini { border-left: 4px solid var(--color-gemini); }
         .comment-node.node-claude { border-left: 4px solid var(--color-claude); }
+        
         .comment-user-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-        .comment-avatar { width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; }
+        .comment-user-left { display: flex; align-items: center; gap: 8px; }
+        .comment-avatar { width: 22px; height: 22px; border-radius: 50%; }
         .avatar-gemini { background-color: var(--color-gemini); }
         .avatar-claude { background-color: var(--color-claude); }
         .comment-username { font-size: 12px; font-weight: 700; }
-        .user-gemini { color: var(--color-gemini); }
-        .user-claude { color: var(--color-claude); }
         
-        /* 內文防爆控制 */
-        .comment-content { font-size: 14px; color: #444; line-height: 1.6; white-space: pre-wrap; overflow: hidden; }
-        .comment-content.collapsed {
-            max-height: 110px; /* 大約 4~5 行的高度 */
-            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        /* 会話をみる 按鈕樣式 */
+        .ai-chat-link {
+            font-size: 11px; font-weight: 700; color: var(--color-mango);
+            text-decoration: none; background: #fff0e6; padding: 2px 8px; border-radius: 8px;
+            transition: background 0.2s;
         }
-        .more-toggle-btn {
-            background: none; border: none; color: var(--text-muted); font-size: 11px;
-            font-weight: 700; padding: 4px 0 0 0; cursor: pointer; display: block; margin-top: 4px;
+        .ai-chat-link:hover { background: #ffd9c2; }
+        
+        /* 表格防變形渲染核心 CSS */
+        .comment-content { 
+            font-size: 14px; color: #444; line-height: 1.6; 
+            white-space: pre-wrap; width: 100%;
         }
-        .more-toggle-btn:hover { color: var(--color-mango); }
+        .comment-content table {
+            border-collapse: collapse; width: 100%; margin: 8px 0;
+            font-size: 13px; background: white; display: block; overflow-x: auto; /* 啟動橫向滑動 */
+            white-space: nowrap; /* 強制不換行防止擠壓變形 */
+        }
+        .comment-content th, .comment-content td {
+            border: 1px solid #dee2e6; padding: 6px 10px; text-align: left;
+        }
+        .comment-content th { background-color: #f1f3f5; font-weight: bold; }
 
         .comment-textarea {
             width: 100%; height: 90px; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 8px; font-size: 13px; resize: none; outline: none; font-family: inherit;
+            border-radius: 10px; padding: 6px; font-size: 13px; resize: none; outline: none; font-family: inherit;
+            margin-bottom: 6px;
+        }
+        .comment-url-input {
+            width: 100%; border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 4px 8px; font-size: 11px; outline: none; font-family: inherit;
         }
     </style>
 </head>
@@ -208,7 +227,7 @@
         <button class="btn-base post-btn" style="width:100%; font-size:12px; padding:6px;" onclick="generateSummary()">指定期間で統整</button>
         <div id="summaryBox" style="display:none; margin-top:10px; background:#f8f9fa; padding:10px; border-radius:10px; border:1px solid var(--border-color);">
             <div id="summaryContent" style="font-size:11px; white-space:pre-wrap; max-height:100px; overflow-y:auto; margin-bottom:6px; background:white; padding:6px; border-radius:6px;"></div>
-            <button class="btn-base draft-btn" style="font-size:10px; padding:4px 8px; width:100%;" onclick="copySummary()">コピー（複製）</button>
+            <button class="btn-base draft-btn" style="font-size:10px; padding:4px 8px; width:100%;" onclick="copySummary()">コピー</button>
         </div>
     </div>
 
@@ -233,7 +252,7 @@
     </div>
 
     <div class="sidebar-section" style="border:none; margin-top:auto; padding-top:20px; text-align:center; font-size:11px; color:var(--text-muted);">
-        バージョン：v2.6.0<br>最終更新：2026/06/10
+        バージョン：v2.7.0<br>最終更新：2026/06/10
     </div>
 </div>
 
@@ -266,6 +285,9 @@
     const USER_AVATAR = "🌷";
     let currentWeatherData = "位置情報オフ";
 
+    // 全局狀態暫存展開收合
+    let expandedStates = {};
+
     document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("postTargetDate").value = new Date().toISOString().split('T')[0];
         document.getElementById("settingsUsername").value = USER_NAME;
@@ -293,23 +315,29 @@
     }
 
     function autoSaveDraft() { localStorage.setItem("jp_diary_draft", document.getElementById("postInput").value); }
-    function manualSaveDraft() { const content = document.getElementById("postInput").value.trim(); if (!content) return; localStorage.setItem("jp_diary_draft", content); checkDraft(); alert("草稿已儲存！"); }
+    function manualSaveDraft() { const content = document.getElementById("postInput").value.trim(); if (!content) return; localStorage.setItem("jp_diary_draft", content); checkDraft(); alert("下書きを保存しました！"); }
     function checkDraft() { const d = localStorage.getItem("jp_diary_draft"); const area = document.getElementById("draftArea"); if (d && d.trim()) { area.style.display = "block"; document.getElementById("draftContent").innerText = d.length > 25 ? d.substring(0, 25) + "..." : d; } else { area.style.display = "none"; } }
     function loadDraft() { document.getElementById("postInput").value = localStorage.getItem("jp_diary_draft"); }
 
-    /* 編輯日記功能 */
     function editPost(postId) {
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const target = posts.find(p => p.id === postId);
+        if(!target) return;
+        
         const contentBox = document.getElementById(`content-${postId}`);
-        const currentText = contentBox.innerText;
+        if (document.getElementById(`readmore-p-${postId}`)) {
+            document.getElementById(`readmore-p-${postId}`).style.display = 'none';
+        }
+
         contentBox.innerHTML = `
-            <textarea id="textarea-${postId}" class="edit-textarea">${currentText}</textarea>
+            <textarea id="textarea-${postId}" class="edit-textarea">${target.content}</textarea>
             <div style="display:flex; gap:6px; margin-top:8px; justify-content:flex-end;">
-                <button class="btn-base draft-btn" style="padding:4px 10px; font-size:11px;" onclick="cancelEdit(${postId}, \`${encodeURIComponent(currentText)}\`)">キャンセル</button>
+                <button class="btn-base draft-btn" style="padding:4px 10px; font-size:11px;" onclick="renderPosts()">キャンセル</button>
                 <button class="btn-base post-btn" style="padding:4px 10px; font-size:11px;" onclick="saveEdit(${postId})">保存</button>
             </div>
         `;
     }
-    function cancelEdit(postId, oldText) { document.getElementById(`content-${postId}`).innerText = decodeURIComponent(oldText); }
+    
     function saveEdit(postId) {
         const newText = document.getElementById(`textarea-${postId}`).value.trim();
         if(!newText) return;
@@ -328,7 +356,6 @@
         btn.innerText = isBlock ? "添削・学習メモ" : "折りたたむ";
     }
 
-    /* 處理 AI 留言與限制器 */
     function requestAICorrection(aiType, postId, rawContent) {
         const container = document.getElementById(`comments-container-${postId}`);
         let node = document.getElementById(`comment-${aiType}-${postId}`);
@@ -337,31 +364,31 @@
             node = document.createElement("div");
             node.id = `comment-${aiType}-${postId}`;
             node.className = `comment-node node-${aiType}`;
-            setupCommentEditing(node, postId, aiType, "");
+            setupCommentEditing(node, postId, aiType, "", "");
         }
         container.insertBefore(node, container.firstChild);
 
-        // 從源頭下指令給 AI 限制格式
-        const promptText = `請幫我批改這段日文日記。請指出不自然的地方、文法錯誤，並提供修正建議與更道地的表達方式：\n\n「${decodeURIComponent(rawContent)}」\n\n⚠️【重要格式限制】：請提供精簡明瞭的解析即可。如果需要對比或列出重點，請一律使用『條列式項目（* 或 -）』與換行來呈現，絕對不要使用 Markdown 表格，以免我的排版歪掉。`;
+        const promptText = `請幫我批改以下這段日文日記。\n請你「嚴格遵守以下格式與文字結構」進行回覆，不要添加任何問候語，且全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n這篇日記……（請在此簡述讀完的整體感受），能感受到……（請在此描述感受到的氛圍或心情）。以下是詳細批改：\n\n＿＿\n批改與建議\n\n句①\n原文：\n「${decodeURIComponent(rawContent)}」\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n【整體評價】\n詞彙量：（請給出簡短評價，例如：豐富，有在嘗試多樣表達）\n文法：（請指出強項或需要注意的地方）\n自然度：（請指出是否有直譯痕跡）\n表達深度：（請給予鼓勵或建議）\n\n（最後請用一小段話總結學生的盲點，繼續加油！）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
         
         navigator.clipboard.writeText(promptText).then(() => {
-            alert("提示詞已內建「防爆防表格指令」並複製！請直接貼上送出。");
+            alert("プロンプトをコピーしました！AIの画面に貼り付けてみてください。");
             window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
         }).catch(() => {
             window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
         });
     }
 
-    function setupCommentEditing(node, postId, aiType, currentVal) {
+    function setupCommentEditing(node, postId, aiType, currentVal, currentUrl) {
         const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
         node.innerHTML = `
             <div class="comment-user-bar">
-                <div style="display:flex; align-items:center;">
+                <div class="comment-user-left">
                     <div class="comment-avatar avatar-${aiType}"></div>
                     <span class="comment-username user-${aiType}">${label}</span>
                 </div>
             </div>
-            <textarea id="textarea-${aiType}-${postId}" class="comment-textarea" placeholder="ここにAIの返信結果を貼り付け、返信ボタンで確定...">${currentVal}</textarea>
+            <textarea id="textarea-${aiType}-${postId}" class="comment-textarea" placeholder="ここにAIの返信結果を貼り付け...">${currentVal}</textarea>
+            <input type="text" id="urlinput-${aiType}-${postId}" class="comment-url-input" placeholder="🔗 AIの会話リンクを貼り付け（任意）" value="${currentUrl}">
             <div style="display:flex; justify-content:flex-end; margin-top:6px;">
                 <button class="btn-base post-btn" style="font-size:11px; padding:4px 10px;" onclick="lockComment(${postId}, '${aiType}')">返信</button>
             </div>
@@ -370,6 +397,7 @@
 
     function lockComment(postId, aiType) {
         const text = document.getElementById(`textarea-${aiType}-${postId}`).value.trim();
+        const url = document.getElementById(`urlinput-${aiType}-${postId}`).value.trim();
         if(!text) return;
         
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
@@ -377,6 +405,9 @@
         if(idx !== -1) {
             if(!posts[idx].aiComments) posts[idx].aiComments = {};
             posts[idx].aiComments[aiType] = text;
+
+            if(!posts[idx].aiUrls) posts[idx].aiUrls = {};
+            posts[idx].aiUrls[aiType] = url; // 儲存備忘網址
 
             if(!posts[idx].commentOrder) posts[idx].commentOrder = [];
             posts[idx].commentOrder = posts[idx].commentOrder.filter(x => x !== aiType);
@@ -387,25 +418,85 @@
         }
     }
 
-    function unlockComment(postId, aiType, currentVal) {
+    function unlockComment(postId, aiType, currentVal, currentUrl) {
         const node = document.getElementById(`comment-${aiType}-${postId}`);
-        setupCommentEditing(node, postId, aiType, currentVal);
+        setupCommentEditing(node, postId, aiType, decodeURIComponent(currentVal), decodeURIComponent(currentUrl));
     }
 
-    /* 智慧切換展開/摺疊狀態 */
-    function toggleCommentLength(postId, aiType) {
-        const textEl = document.getElementById(`text-target-${aiType}-${postId}`);
-        const btnEl = document.getElementById(`btn-toggle-${aiType}-${postId}`);
-        if(textEl.classList.contains("collapsed")) {
-            textEl.classList.remove("collapsed");
-            btnEl.innerText = "閉じる（收起）";
+    // 核心處理：字數偵測與超強防變形 Markdown 表格解析器
+    function parseContentAndWrap(text, limit, keyId) {
+        const hasTable = text.includes('|');
+        let htmlResult = text;
+
+        if (hasTable) {
+            htmlResult = parseMarkdownTable(text);
         } else {
-            textEl.classList.add("collapsed");
-            btnEl.innerText = "続きを読む（展開全文）";
+            htmlResult = escapeHtml(text).replace(/\n/g, '<br>');
+        }
+
+        if (text.length <= limit) {
+            return { html: htmlResult, needsReadMore: false };
+        }
+
+        const isExpanded = expandedStates[keyId] || false;
+        if (isExpanded) {
+            return { html: htmlResult, needsReadMore: true, isExpanded: true };
+        } else {
+            let truncatedText = text.substring(0, limit) + "...";
+            let truncatedHtml = hasTable ? parseMarkdownTable(text.substring(0, limit)) : escapeHtml(truncatedText).replace(/\n/g, '<br>');
+            return { html: truncatedHtml, needsReadMore: true, isExpanded: false };
         }
     }
 
-    /* 搜尋文章邏輯 */
+    function handleExpandToggle(keyId) {
+        expandedStates[keyId] = !expandedStates[keyId];
+        renderPosts();
+    }
+
+    // 將 Markdown 表格精準渲染為漂亮不扭曲網格的引擎
+    function parseMarkdownTable(text) {
+        const lines = text.split('\n');
+        let inTable = false;
+        let tableHtml = '';
+        let resultHtml = '';
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                if (!inTable) {
+                    inTable = true;
+                    tableHtml = '<table>';
+                }
+                
+                if (trimmed.includes('---') || trimmed.includes('-:-')) {
+                    return;
+                }
+
+                const cells = trimmed.split('|').map(c => c.trim()).filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
+                tableHtml += '<tr>';
+                cells.forEach(cell => {
+                    const tag = tableHtml.includes('<th>') ? 'td' : 'th'; 
+                    tableHtml += `<${tag}>${escapeHtml(cell)}</${tag}>`;
+                });
+                tableHtml += '</tr>';
+            } else {
+                if (inTable) {
+                    inTable = false;
+                    tableHtml += '</table>';
+                    resultHtml += tableHtml;
+                    tableHtml = '';
+                }
+                resultHtml += escapeHtml(line) + '<br>';
+            }
+        });
+
+        if (inTable) {
+            tableHtml += '</table>';
+            resultHtml += tableHtml;
+        }
+        return resultHtml;
+    }
+
     function searchPosts(keyword) {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const k = keyword.toLowerCase().trim();
@@ -414,7 +505,6 @@
         renderFeedList(filtered);
     }
 
-    /* 日期篩選與統整邏輯 */
     function generateSummary() {
         const start = document.getElementById("filterStart").value;
         const end = document.getElementById("filterEnd").value;
@@ -487,7 +577,7 @@
             finalId = customDate.getTime(); weatherInfo = "過去の記録"; 
         }
 
-        const post = { id: finalId, time: timestamp, weather: weatherInfo, content: content, aiComments: {}, commentOrder: [] };
+        const post = { id: finalId, time: timestamp, weather: weatherInfo, content: content, aiComments: {}, aiUrls: {}, commentOrder: [] };
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         posts.push(post); posts.sort((a, b) => b.id - a.id);
         localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
@@ -513,21 +603,51 @@
             const weatherString = post.weather ? `<span>${escapeHtml(post.weather)}</span>` : "";
             const encodedContent = encodeURIComponent(post.content);
 
+            // 解析日記原文（200字折疊）
+            const origKey = `p-${post.id}`;
+            const origParse = parseContentAndWrap(post.content, 200, origKey);
+            let origBtnHtml = "";
+            if (origParse.needsReadMore) {
+                const label = origParse.isExpanded ? "折りたたむ（收起全文）" : "... 続きを読む（展開全文）";
+                origBtnHtml = `<button id="readmore-${origKey}" class="readmore-btn" onclick="handleExpandToggle('${origKey}')">${label}</button>`;
+            }
+
             let commentsHtml = "";
             const order = post.commentOrder || [];
             
-            // 處理與組合留言內容
+            // 渲染已鎖定發布的 AI 留言
             order.forEach(aiType => {
                 const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
+                const chatUrl = post.aiUrls ? (post.aiUrls[aiType] || "") : "";
                 if(!val) return;
-                commentsHtml += buildCommentNodeHtml(post.id, aiType, val);
-            });
+                const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
+                
+                // 判斷是否有對話網址，若有則生成連結按鈕
+                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link">会話をみる</a>` : "";
 
-            ['gemini', 'claude'].forEach(aiType => {
-                if (!order.includes(aiType) && post.aiComments && post.aiComments[aiType]) {
-                    const val = post.aiComments[aiType];
-                    commentsHtml = buildCommentNodeHtml(post.id, aiType, val) + commentsHtml;
+                // 解析 AI 留言內容（200字折疊 + 自動排版表格）
+                const commKey = `c-${aiType}-${post.id}`;
+                const commParse = parseContentAndWrap(val, 200, commKey);
+                let commBtnHtml = "";
+                if (commParse.needsReadMore) {
+                    const btnLabel = commParse.isExpanded ? "折りたたむ（收起全文）" : "... 続きを読む（展開全文）";
+                    commBtnHtml = `<div><button id="readmore-${commKey}" class="readmore-btn" onclick="handleExpandToggle('${commKey}')">${btnLabel}</button></div>`;
                 }
+
+                commentsHtml += `
+                    <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
+                        <div class="comment-user-bar">
+                            <div class="comment-user-left">
+                                <div class="comment-avatar avatar-${aiType}"></div>
+                                <span class="comment-username user-${aiType}">${label}</span>
+                                ${urlBtnHtml}
+                            </div>
+                            <span class="action-link" style="font-size:11px;" onclick="unlockComment(${post.id}, '${aiType}', \`${encodeURIComponent(val)}\`, \`${encodeURIComponent(chatUrl)}\`)">編集</span>
+                        </div>
+                        <div class="comment-content">${commParse.html}</div>
+                        ${commBtnHtml}
+                    </div>
+                `;
             });
 
             postEl.innerHTML = `
@@ -538,9 +658,10 @@
                         <div class="meta-info"><span>${post.time}</span>${weatherString}</div>
                     </div>
                 </div>
-                <div class="post-content" id="content-${post.id}">${escapeHtml(post.content)}</div>
+                <div class="post-content" id="content-${post.id}">${origParse.html}</div>
+                ${origBtnHtml}
                 
-                <div class="post-action-bar">
+                <div class="post-action-bar" id="actions-${post.id}">
                     <span class="action-link" onclick="editPost(${post.id})">編集する</span>
                     <span class="action-link" style="color:#ff5c5c;" onclick="deletePost(${post.id})">削除する</span>
                 </div>
@@ -562,29 +683,6 @@
         });
     }
 
-    /* 建立帶有自動限高摺疊功能的留言 HTML 結構 */
-    function buildCommentNodeHtml(postId, aiType, val) {
-        const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
-        const needsCollapse = val.length > 150; // 超過 150 字啟動智慧摺疊
-        const collapseClass = needsCollapse ? "collapsed" : "";
-        const toggleBtnHtml = needsCollapse ? `<button id="btn-toggle-${aiType}-${postId}" class="more-toggle-btn" onclick="toggleCommentLength(${postId}, '${aiType}')">続きを読む（展開全文）</button>` : "";
-
-        return `
-            <div id="comment-${aiType}-${postId}" class="comment-node node-${aiType}">
-                <div class="comment-user-bar">
-                    <div style="display:flex; align-items:center;">
-                        <div class="comment-avatar avatar-${aiType}"></div>
-                        <span class="comment-username user-${aiType}">${label}</span>
-                    </div>
-                    <span class="action-link" style="font-size:11px;" onclick="unlockComment(${postId}, '${aiType}', \`${encodeURIComponent(val)}\`)">編集</span>
-                </div>
-                <div class="comment-content ${collapseClass}" id="text-target-${aiType}-${postId}">${escapeHtml(val).replace(/\n/g, '<br>')}</div>
-                ${toggleBtnHtml}
-            </div>
-        `;
-    }
-
-    /* 備份系統與工具 */
     function exportJSON() {
         const posts = localStorage.getItem("jp_sns_posts") || "[]";
         const blob = new Blob([posts], { type: "application/json" });
