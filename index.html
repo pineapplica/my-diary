@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ひとりごと</title>
+    <title>ひとりごと - Claude Edition</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
-    <style>
+    <style id="custom-theme-vars">
         :root {
             --bg-color: #FDF8F4;
             --card-bg: #ffffff;
@@ -17,13 +17,16 @@
             --text-muted: #7e7e7e;
             --border-color: #E2E9F3;
             
-            --color-lime: #D2E767;
-            --color-mango: #FFA26D;
-            --color-avatar-bg: #C0E0FF;
+            --color-theme: #FFA26D;
+            --color-subtheme: #D2E767;
+            --color-grass: #2ECC71;
             
-            --color-gemini: #1A73E8; 
+            --color-avatar-bg: #C0E0FF;
             --color-claude: #D97756; 
         }
+    </style>
+
+    <style>
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
@@ -35,76 +38,80 @@
             margin: 0; padding: 0;
             padding-bottom: 60px;
             overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
         
-        /* 導覽列與側邊選單 */
         .header {
             font-family: 'Noto Serif JP', serif;
             font-weight: 700;
             position: sticky; top: 0;
-            background: rgba(253, 248, 244, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--color-mango);
+            background: var(--bg-color);
+            border-bottom: 2px solid var(--color-theme);
             padding: 16px;
             text-align: center;
             font-size: 20px;
-            color: #4a4a4a;
             z-index: 90;
             letter-spacing: 3px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .menu-trigger {
-            background: none; border: none; font-size: 22px; cursor: pointer; color: #4a4a4a; padding: 0 4px;
+            background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-color); padding: 0 4px;
         }
         
-        /* 側邊選單外殼 */
+        /* 側邊選單 */
         .sidebar {
-            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
-            background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.08);
-            z-index: 200; transition: right 0.3s ease;
+            position: fixed; top: 0; right: -300px; width: 300px; height: 100%;
+            background: var(--card-bg); box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            z-index: 200; transition: right 0.3s ease, background-color 0.3s;
             display: flex; flex-direction: column; padding: 20px;
             overflow-y: auto;
+            color: var(--text-color);
         }
         .sidebar.open { right: 0; }
         .sidebar-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3); z-index: 190; display: none;
+            background: rgba(0,0,0,0.4); z-index: 190; display: none;
         }
         .sidebar-section {
             border-bottom: 1px dashed var(--border-color); padding-bottom: 16px; margin-bottom: 16px;
         }
-        .sidebar-title { font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 10px; }
+        .sidebar-title { font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 10px; border-left: 3px solid var(--color-theme); padding-left: 6px; }
         
         .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 14px; }
         
-        /* 按鈕風格 */
+        /* 按鈕基本風格 */
         .btn-base {
             font-family: inherit; border: none; border-radius: 20px; padding: 8px 18px;
-            font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s;
+            font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s, background-color 0.2s;
         }
         .btn-base:active { opacity: 0.8; }
-        .draft-btn { background-color: #e9ecef; color: #495057; }
-        .post-btn { background-color: var(--color-mango); color: white; box-shadow: 0 2px 6px rgba(255, 162, 109, 0.4); }
+        .draft-btn { background-color: var(--border-color); color: var(--text-color); opacity: 0.9; }
+        .post-btn { background-color: var(--color-theme); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
-        /* 發文區 */
+        /* 發文區與提示訊息 */
         .post-box {
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 16px; margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(129, 165, 222, 0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .greeting-banner {
+            font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border-color);
         }
         .post-box textarea {
             width: 100%; height: 100px; background: transparent; border: none;
-            color: var(--text-color); font-size: 14px; resize: none; line-height: 1.6;
+            color: var(--text-color); font-size: 14px; resize: none; line-height: 1.6; font-family: inherit;
         }
         .post-box textarea:focus { outline: none; }
         .weather-status { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
         
-        /* 搜尋欄位 */
         .search-input {
             width: 100%; font-family: inherit; border: 1px solid var(--border-color);
             border-radius: 12px; padding: 8px 12px; font-size: 12px; outline: none; margin-bottom: 12px;
+            background: var(--bg-color); color: var(--text-color);
         }
 
         /* 動態牆 */
@@ -112,7 +119,8 @@
         .post {
             position: relative;
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(129, 165, 222, 0.05);
+            border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .post-header { display: flex; align-items: center; margin-bottom: 12px; padding-right: 24px; }
         .avatar {
@@ -122,103 +130,104 @@
         .username { font-weight: 700; font-size: 14px; }
         .meta-info { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; margin-top: 2px; }
         
-        /* 右上角功能選單 */
-        .post-menu-container {
-            position: absolute; top: 16px; right: 16px;
+        /* 引用連結外觀 */
+        .quote-badge {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 6px 10px; font-size: 11px; margin-bottom: 10px;
+            display: inline-flex; align-items: center; max-width: 100%; overflow: hidden;
         }
-        .post-menu-trigger {
-            background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); padding: 0 4px; line-height: 1;
+        .quote-badge a {
+            color: var(--color-theme); text-decoration: none; font-weight: 700;
+            white-space: nowrap; text-overflow: ellipsis; overflow: hidden; margin-left: 4px;
         }
-        .post-menu-dropdown {
-            display: none; position: absolute; top: 20px; right: 0; background: white;
-            border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 80; min-width: 90px; overflow: hidden;
-        }
-        .post-menu-item {
-            padding: 8px 12px; font-size: 12px; cursor: pointer; text-align: left; color: var(--text-color);
-        }
-        .post-menu-item:hover { background-color: #f8f9fa; }
         
-        /* 內容與摺疊 */
+        /* 功能選單 */
+        .post-menu-container { position: absolute; top: 16px; right: 16px; }
+        .post-menu-trigger { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); padding: 0 4px; }
+        .post-menu-dropdown {
+            display: none; position: absolute; top: 20px; right: 0; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 80; min-width: 100px; overflow: hidden;
+        }
+        .post-menu-item { padding: 8px 12px; font-size: 12px; cursor: pointer; text-align: left; color: var(--text-color); }
+        .post-menu-item:hover { background-color: var(--bg-color); }
+        
         .post-content {
             font-family: 'Noto Serif JP', serif; font-size: 14px; line-height: 1.75;
-            white-space: pre-wrap; margin-bottom: 6px; color: #2c2c2c;
+            white-space: pre-wrap; margin-bottom: 6px; color: var(--text-color);
         }
         .edit-textarea {
-            width: 100%; height: 90px; border: 1px solid var(--color-mango);
+            width: 100%; height: 90px; border: 1px solid var(--color-theme); background: var(--bg-color); color: var(--text-color);
             border-radius: 12px; padding: 8px; font-family: inherit; font-size: 14px; resize: none; outline: none;
         }
         .readmore-btn {
-            background: none; border: none; color: var(--color-mango); font-size: 12px;
+            background: none; border: none; color: var(--color-theme); font-size: 12px;
             font-weight: 700; cursor: pointer; padding: 4px 0; margin-bottom: 10px; display: inline-block;
         }
 
         .comment-style-toggle {
-            font-family: inherit; font-size: 12px; color: #6d7a1c; background: #f4f6ec;
+            font-family: inherit; font-size: 12px; color: var(--text-color); background: var(--color-subtheme);
             border: none; border-radius: 12px; padding: 6px 12px; cursor: pointer; font-weight: 700; margin-top: 8px;
         }
 
         .interactive-panel { display: none; margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px; }
         .ai-select-row { display: flex; gap: 8px; margin-bottom: 12px; }
         .ai-mini-btn { flex: 1; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: none; }
-        .ai-btn-gemini { background: #e8f0fe; color: var(--color-gemini); }
-        .ai-btn-claude { background: #fdf2ee; color: var(--color-claude); }
+        .ai-btn-claude { background: var(--bg-color); color: var(--color-claude); border: 1px solid var(--border-color); }
 
-        /* 留言區與防變形表格系統 */
+        /* Claude 專屬留言板結構 */
         .comments-container { display: flex; flex-direction: column; gap: 10px; }
         .comment-node {
-            background-color: #fafbfc; border-left: 4px solid var(--border-color);
-            padding: 10px 12px; border-radius: 0 14px 14px 0; border: 1px solid #f0f2f5;
+            background-color: var(--bg-color); border-left: 4px solid var(--color-claude);
+            padding: 10px 12px; border-radius: 0 14px 14px 0; border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
         }
-        .comment-node.node-gemini { border-left: 4px solid var(--color-gemini); }
-        .comment-node.node-claude { border-left: 4px solid var(--color-claude); }
-        
         .comment-user-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
         .comment-user-left { display: flex; align-items: center; gap: 8px; }
-        .comment-avatar { width: 20px; height: 20px; border-radius: 50%; }
-        .avatar-gemini { background-color: var(--color-gemini); }
-        .avatar-claude { background-color: var(--color-claude); }
+        .comment-avatar { width: 20px; height: 20px; border-radius: 50%; background-color: var(--color-claude); }
         .comment-username { font-size: 12px; font-weight: 700; }
-        
-        /* 会話をみる 按鈕樣式（同色系優化） */
-        .ai-chat-link-gemini {
-            font-size: 11px; font-weight: 700; color: var(--color-gemini);
-            text-decoration: none; background: #e8f0fe; padding: 2px 8px; border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .ai-chat-link-gemini:hover { background: #d2e3fc; }
         
         .ai-chat-link-claude {
             font-size: 11px; font-weight: 700; color: var(--color-claude);
-            text-decoration: none; background: #fdf2ee; padding: 2px 8px; border-radius: 8px;
-            transition: background 0.2s;
+            text-decoration: none; background: var(--card-bg); padding: 2px 8px; border-radius: 8px;
+            border: 1px solid var(--border-color); transition: background 0.2s;
         }
-        .ai-chat-link-claude:hover { background: #fbe4da; }
         
-        /* 表格防變形渲染核心 CSS */
-        .comment-content { 
-            font-size: 13px; color: #444; line-height: 1.6; 
-            white-space: pre-wrap; width: 100%;
-        }
+        .comment-content { font-size: 13px; color: var(--text-color); line-height: 1.6; white-space: pre-wrap; width: 100%; }
         .comment-content table {
             border-collapse: collapse; width: 100%; margin: 8px 0;
-            font-size: 12px; background: white; display: block; overflow-x: auto;
-            white-space: nowrap;
+            font-size: 12px; background: var(--card-bg); display: block; overflow-x: auto; white-space: nowrap;
         }
-        .comment-content th, .comment-content td {
-            border: 1px solid #dee2e6; padding: 6px 10px; text-align: left;
-        }
-        .comment-content th { background-color: #f1f3f5; font-weight: bold; }
+        .comment-content th, .comment-content td { border: 1px solid var(--border-color); padding: 6px 10px; text-align: left; }
+        .comment-content th { background-color: var(--border-color); font-weight: bold; }
 
         .comment-textarea {
-            width: 100%; height: 90px; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 6px; font-size: 12px; resize: none; outline: none; font-family: inherit;
-            margin-bottom: 6px;
+            width: 100%; height: 90px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
+            border-radius: 10px; padding: 6px; font-size: 12px; resize: none; outline: none; font-family: inherit; margin-bottom: 6px;
         }
         .comment-url-input {
-            width: 100%; border: 1px solid var(--border-color); border-radius: 8px;
-            padding: 4px 8px; font-size: 11px; outline: none; font-family: inherit;
+            width: 100%; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
+            border-radius: 8px; padding: 4px 8px; font-size: 11px; outline: none; font-family: inherit;
         }
+
+        /* 數據視覺化組件：習慣草皮 */
+        .grass-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 8px; }
+        .grass-cell { width: 100%; aspect-ratio: 1; border-radius: 3px; background-color: var(--border-color); position: relative; cursor: pointer; }
+        .grass-cell::after {
+            content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px;
+            white-space: nowrap; display: none; z-index: 10;
+        }
+        .grass-cell:hover::after { display: block; }
+
+        /* 數據視覺化組件：極簡單條比例圖 */
+        .ratio-bar-wrapper { height: 14px; width: 100%; background: var(--border-color); border-radius: 7px; overflow: hidden; display: flex; margin-top: 6px; }
+        .ratio-segment-quote { background: var(--color-theme); height: 100%; transition: width 0.3s; }
+        .ratio-segment-pure { background: var(--color-subtheme); height: 100%; transition: width 0.3s; }
+
+        /* 調色盤控制項群組 */
+        .theme-picker-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 11px; }
+        .theme-picker-row input[type="color"] { border: none; width: 30px; height: 20px; cursor: pointer; background: transparent; }
     </style>
 </head>
 <body>
@@ -242,19 +251,57 @@
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">期間指定で集計</div>
+        <div class="sidebar-title">学習進捗・習慣</div>
+        <div id="statsBox" style="font-size:11px; color:var(--text-muted); line-height:1.6; margin-bottom:10px;">日記総数：0篇</div>
+        
+        <div style="font-size:11px; font-weight:700; margin-bottom:4px;">習慣の芝生 (過去28日間)</div>
+        <div id="grassGrid" class="grass-container"></div>
+        
+        <div style="font-size:11px; font-weight:700; margin-top:12px; margin-bottom:4px; display:flex; justify-content:space-between;">
+            <span>インスピレーション比率</span>
+            <span id="ratioText" style="font-size:9px; color:var(--text-muted);">0% : 0%</span>
+        </div>
+        <div class="ratio-bar-wrapper">
+            <div id="ratioQuote" class="ratio-segment-quote" style="width: 50%"></div>
+            <div id="ratioPure" class="ratio-segment-pure" style="width: 50%"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-muted); margin-top:2px;">
+            <span>引用 (${USER_NAME || 'リンク'})</span>
+            <span>つぶやき (日常)</span>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; margin-top:12px; margin-bottom:4px;">執筆の習慣定着 (主時間帯)</div>
+        <div id="timeHabitText" style="font-size:11px; color:var(--text-muted);">記録収集中...</div>
+
+        <div style="font-size:11px; font-weight:700; margin-top:12px; margin-bottom:4px;">Claude 添削エラー率推移</div>
+        <div id="errorRateText" style="font-size:11px; color:var(--text-muted);">データが足りません</div>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-title">期間指定で弱点分析</div>
         <input type="date" id="filterStart" class="search-input" style="margin-bottom:6px;">
         <input type="date" id="filterEnd" class="search-input" style="margin-bottom:10px;">
-        <button class="btn-base post-btn" style="width:100%; font-size:11px; padding:6px;" onclick="generateSummary()">指定期間で統整</button>
-        <div id="summaryBox" style="display:none; margin-top:10px; background:#f8f9fa; padding:10px; border-radius:10px; border:1px solid var(--border-color);">
-            <div id="summaryContent" style="font-size:11px; white-space:pre-wrap; max-height:100px; overflow-y:auto; margin-bottom:6px; background:white; padding:6px; border-radius:6px;"></div>
-            <button class="btn-base draft-btn" style="font-size:11px; padding:4px 8px; width:100%;" onclick="copySummary()">コピー</button>
+        <button class="btn-base post-btn" style="width:100%; font-size:11px; padding:6px;" onclick="generateSummary()">弱点分析プロンプト生成</button>
+        <div id="summaryBox" style="display:none; margin-top:10px; background:var(--bg-color); padding:10px; border-radius:10px; border:1px solid var(--border-color);">
+            <div id="summaryContent" style="font-size:10px; white-space:pre-wrap; max-height:100px; overflow-y:auto; margin-bottom:6px; background:var(--card-bg); padding:6px; border-radius:6px; color:var(--text-color);"></div>
+            <button class="btn-base draft-btn" style="font-size:11px; padding:4px 8px; width:100%;" onclick="copySummary()">コピーする</button>
         </div>
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">学習進捗</div>
-        <div id="statsBox" style="font-size:11px; color:#555; line-height:1.6;">日記総数：0篇<br>AIフィードバック：0回</div>
+        <div class="sidebar-title">カラーカスタム</div>
+        <div class="theme-picker-row"><span>背景の色</span><input type="color" id="cpBg" onchange="updateLiveTheme()"></div>
+        <div class="theme-picker-row"><span>カードの色</span><input type="color" id="cpCard" onchange="updateLiveTheme()"></div>
+        <div class="theme-picker-row"><span>文字の色</span><input type="color" id="cpText" onchange="updateLiveTheme()"></div>
+        <div class="theme-picker-row"><span>テーマの色</span><input type="color" id="cpTheme" onchange="updateLiveTheme()"></div>
+        <div class="theme-picker-row"><span>サブテーマ色</span><input type="color" id="cpSubtheme" onchange="updateLiveTheme()"></div>
+        <div class="theme-picker-row"><span>芝生の色</span><input type="color" id="cpGrass" onchange="updateLiveTheme()"></div>
+        
+        <div style="margin-top:10px; display:flex; gap:4px;">
+            <input type="text" id="newPaletteName" class="search-input" placeholder="パレット名..." style="margin-bottom:0; flex:1; padding:4px 8px;">
+            <button class="btn-base post-btn" style="padding:4px 10px; border-radius:8px;" onclick="saveCurrentPalette()">保存</button>
+        </div>
+        <div id="savedPalettesList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
     </div>
 
     <div class="sidebar-section">
@@ -264,32 +311,37 @@
 
     <div class="sidebar-section">
         <div class="sidebar-title">データ管理</div>
-        <button class="btn-base draft-btn" style="width:100%; font-size:11px; padding:6px; margin-bottom:6px;" onclick="exportJSON()">日記をバックアップ (JSON)</button>
-        <label class="btn-base draft-btn" style="display:block; text-align:center; font-size:11px; padding:6px; margin-bottom:6px;">
+        <button class="btn-base draft-btn" style="width:100%; font-size:11px; padding:6px; margin-bottom:6px;" onclick="exportJSON()">バックアップ (JSON)</button>
+        <label class="btn-base draft-btn" style="display:block; text-align:center; font-size:11px; padding:6px; margin-bottom:6px; cursor:pointer;">
             バックアップを復元 (JSON)
             <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJSON(this)">
         </label>
-        <button class="btn-base draft-btn" style="width:100%; font-size:11px; padding:6px;" onclick="exportCSV()">Excel/CSVに出力</button>
     </div>
 
     <div class="sidebar-section" style="border:none; margin-top:auto; padding-top:20px; text-align:center; font-size:11px; color:var(--text-muted);">
-        バージョン：v2.8.0<br>最終更新：2026/06/12
+        バージョン：v3.0.0<br>最終更新：2026/06/14
     </div>
 </div>
 
 <div class="container">
-    <div id="draftArea" style="display:none; background:#f8f9fa; border:1px solid #e9ecef; border-radius:14px; padding:12px; margin-bottom:16px;">
-        <div style="font-size:11px; font-weight:700; color:#6c757d; margin-bottom:6px;">下書き</div>
-        <div id="draftContent" style="font-size:13px; color:#333; background:white; padding:10px; border-radius:8px; border:1px solid #dee2e6; cursor:pointer;" onclick="loadDraft()"></div>
+    <div id="draftArea" style="display:none; background:var(--card-bg); border:1px solid var(--border-color); border-radius:14px; padding:12px; margin-bottom:16px;">
+        <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">下書き</div>
+        <div id="draftContent" style="font-size:13px; cursor:pointer;" onclick="loadDraft()"></div>
     </div>
 
     <div class="post-box">
+        <div id="greetingBanner" class="greeting-banner">お疲れ様です</div>
         <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..." oninput="autoSaveDraft()"></textarea>
+        
+        <div style="margin-bottom:10px;">
+            <input type="text" id="postQuoteUrl" class="search-input" placeholder="🔗 引用リンク (YouTube、ニュースなど選填)" style="margin-bottom:0; font-size:11px; padding:6px 10px;">
+        </div>
+
         <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f5f5f5; padding-top:12px; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:12px; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:4px;">
                 <span style="font-size:11px; color:var(--text-muted);">投稿日:</span>
-                <input type="date" id="postTargetDate" style="font-family:inherit; border:1px solid var(--border-color); border-radius:8px; padding:4px; font-size:11px;">
+                <input type="date" id="postTargetDate" style="font-family:inherit; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); border-radius:8px; padding:4px; font-size:11px;">
             </div>
             <div style="display:flex; gap:6px;">
                 <button class="btn-base draft-btn" onclick="manualSaveDraft()">下書き保存</button>
@@ -305,26 +357,182 @@
     let USER_NAME = localStorage.getItem("diary_username") || "リカ";
     const USER_AVATAR = "🌷";
     let currentWeatherData = "位置情報オフ";
-
     let expandedStates = {};
+
+    // 內建預設與自訂色版儲存庫
+    let savedPalettes = JSON.parse(localStorage.getItem("diary_saved_palettes")) || {
+        "現行手帳米": { bg: "#FDF8F4", card: "#ffffff", text: "#333333", muted: "#7e7e7e", border: "#E2E9F3", theme: "#FFA26D", subtheme: "#D2E767", grass: "#2ECC71" },
+        "深夜ネオン": { bg: "#1A202C", card: "#2D3748", text: "#FAF7F8", muted: "#A0AEC0", border: "#4A5568", theme: "#C44BD1", subtheme: "#A9C961", grass: "#00F5D4" }
+    };
+    let currentPaletteName = localStorage.getItem("diary_current_palette_name") || "現行手帳米";
 
     document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("postTargetDate").value = new Date().toISOString().split('T')[0];
         document.getElementById("settingsUsername").value = USER_NAME;
+        
+        applyTheme(currentPaletteName);
+        initThemeInputFields();
+        renderSavedPalettesList();
+        
         renderPosts();
         checkDraft();
         getLiveWeatherAndLocation();
+        updateTimePlaceholderAndGreeting();
         
-        // 點擊任意處關閉右上角選單
         document.addEventListener("click", () => {
             document.querySelectorAll(".post-menu-dropdown").forEach(el => el.style.display = "none");
         });
     });
 
+    // 體貼時段定錨提示詞與當日問候
+    function updateTimePlaceholderAndGreeting() {
+        const now = new Date();
+        const hr = now.getHours();
+        const m = now.getMonth() + 1;
+        const d = now.getDate();
+        
+        let greeting = "こんにちは！今日の一言から始めましょう。";
+        let placeholder = "今日の日記を日本語で書いてみましょう！...";
+
+        if (hr >= 5 && hr < 11) {
+            greeting = "おはようございます！今日も心地よい一日を。";
+            placeholder = "朝の新鮮な気持ちを日本語にしてみませんか？...";
+        } else if (hr >= 18 || hr < 5) {
+            greeting = "今日もお疲れ様でした。夜の静かなつぶやきを。";
+            placeholder = "今日一日の出来事や感じたことを、夜の終わりにどうぞ。...";
+        }
+
+        // 萬年曆節慶與梅雨/酷暑高低溫特定問候偵測
+        if (m === 6) {
+            greeting += " 梅雨の季節ですね。お部屋でゆっくり日記を書きましょう。";
+        } else if (m === 7 || m === 8) {
+            greeting += " 本日は猛暑が予想されます。熱中症に気をつけて。";
+        }
+        
+        // 特殊節日範例
+        if (m === 1 && d === 1) greeting = "明けましておめでとうございます！今年の目標は？";
+        if (m === 5 && d === 5) greeting = "こどもの日ですね。端午の節句、ちまきは食べましたか？";
+
+        document.getElementById("greetingBanner").innerText = greeting;
+        document.getElementById("postInput").placeholder = placeholder;
+    }
+
+    // 智慧型多組色彩控制核心邏輯
+    function initThemeInputFields() {
+        const t = savedPalettes[currentPaletteName] || savedPalettes["現行手帳米"];
+        document.getElementById("cpBg").value = t.bg;
+        document.getElementById("cpCard").value = t.card;
+        document.getElementById("cpText").value = t.text;
+        document.getElementById("cpTheme").value = t.theme;
+        document.getElementById("cpSubtheme").value = t.subtheme;
+        document.getElementById("cpGrass").value = t.grass;
+    }
+
+    function updateLiveTheme() {
+        const palette = {
+            bg: document.getElementById("cpBg").value,
+            card: document.getElementById("cpCard").value,
+            text: document.getElementById("cpText").value,
+            muted: isDarkColor(document.getElementById("cpCard").value) ? "#A0AEC0" : "#7e7e7e",
+            border: isDarkColor(document.getElementById("cpBg").value) ? "#4A5568" : "#E2E9F3",
+            theme: document.getElementById("cpTheme").value,
+            subtheme: document.getElementById("cpSubtheme").value,
+            grass: document.getElementById("cpGrass").value
+        };
+        injectVars(palette);
+    }
+
+    function injectVars(p) {
+        // 自動生成草皮四個階梯的深淺漸層透明度
+        const css = `
+            :root {
+                --bg-color: ${p.bg};
+                --card-bg: ${p.card};
+                --text-color: ${p.text};
+                --text-muted: ${p.muted};
+                --border-color: ${p.border};
+                --color-theme: ${p.theme};
+                --color-subtheme: ${p.subtheme};
+                --color-grass: ${p.grass};
+                --color-avatar-bg: #C0E0FF;
+                --color-claude: #D97756;
+                
+                --grass-level-0: ${p.border};
+                --grass-level-1: ${p.grass}4D;
+                --grass-level-2: ${p.grass}99;
+                --grass-level-3: ${p.pGrass || p.grass};
+            }
+        `;
+        document.getElementById("custom-theme-vars").innerHTML = css;
+    }
+
+    function applyTheme(name) {
+        if (!savedPalettes[name]) name = "現行手帳米";
+        currentPaletteName = name;
+        localStorage.setItem("diary_current_palette_name", name);
+        injectVars(savedPalettes[name]);
+    }
+
+    function saveCurrentPalette() {
+        const name = document.getElementById("newPaletteName").value.trim();
+        if (!name) { alert("パレット名を入力してください。"); return; }
+        
+        savedPalettes[name] = {
+            bg: document.getElementById("cpBg").value,
+            card: document.getElementById("cpCard").value,
+            text: document.getElementById("cpText").value,
+            muted: isDarkColor(document.getElementById("cpCard").value) ? "#A0AEC0" : "#7e7e7e",
+            border: isDarkColor(document.getElementById("cpBg").value) ? "#4A5568" : "#E2E9F3",
+            theme: document.getElementById("cpTheme").value,
+            subtheme: document.getElementById("cpSubtheme").value,
+            grass: document.getElementById("cpGrass").value
+        };
+        
+        localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
+        document.getElementById("newPaletteName").value = "";
+        applyTheme(name);
+        renderSavedPalettesList();
+    }
+
+    function deletePalette(e, name) {
+        e.stopPropagation();
+        if (name === "現行手帳米" || name === "深夜ネオン") { alert("プリセットは削除できません。"); return; }
+        if (confirm(`パレット「${name}」を削除しますか？`)) {
+            delete savedPalettes[name];
+            localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
+            if (currentPaletteName === name) applyTheme("現行手帳米");
+            renderSavedPalettesList();
+            initThemeInputFields();
+        }
+    }
+
+    function renderSavedPalettesList() {
+        const box = document.getElementById("savedPalettesList");
+        box.innerHTML = "";
+        Object.keys(savedPalettes).forEach(name => {
+            const row = document.createElement("div");
+            row.style = `display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; border:1px solid var(--border-color);`;
+            if (name === currentPaletteName) row.style.borderColor = "var(--color-theme)";
+            row.onclick = () => { applyTheme(name); initThemeInputFields(); renderSavedPalettesList(); };
+            
+            let delBtn = (name!=="現行手帳米" && name!=="深夜ネオン") ? `<span style="color:#ff5c5c;font-weight:bold;padding:0 4px;" onclick="deletePalette(event, '${name}')">×</span>` : "";
+            row.innerHTML = `<span>🎨 ${name}</span>${delBtn}`;
+            box.appendChild(row);
+        });
+    }
+
+    function isDarkColor(hex) {
+        if(!hex || hex.length<7) return false;
+        const r = parseInt(hex.substr(1,2),16);
+        const g = parseInt(hex.substr(3,2),16);
+        const b = parseInt(hex.substr(5,2),16);
+        return (r*0.299 + g*0.587 + b*0.114) < 128;
+    }
+
     function toggleSidebar(open) {
         document.getElementById("sidebar").classList.toggle("open", open);
         document.getElementById("sidebarOverlay").style.display = open ? "block" : "none";
-        if(open) updateStats();
+        if(open) { updateStatsAndHabits(); updateTimePlaceholderAndGreeting(); }
     }
 
     function saveUserProfile() {
@@ -332,11 +540,110 @@
         if(val) { USER_NAME = val; localStorage.setItem("diary_username", val); renderPosts(); }
     }
 
-    function updateStats() {
+    // 📊 三大習慣養成與進步數據分析核心引擎
+    function updateStatsAndHabits() {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts") || "[]");
-        let aiCount = 0;
-        posts.forEach(p => { if(p.aiComments) aiCount += Object.keys(p.aiComments).length; });
-        document.getElementById("statsBox").innerHTML = `日記総数：${posts.length} 篇<br>AIフィードバック：${aiCount} 回`;
+        document.getElementById("statsBox").innerHTML = `日記総数：${posts.length} 篇`;
+        
+        // 1. 🌿 習慣草皮 (28天) 漸層運作
+        const grassGrid = document.getElementById("grassGrid");
+        grassGrid.innerHTML = "";
+        const nowTime = new Date();
+        
+        let quoteCount = 0;
+        let pureCount = 0;
+        let hourDistribution = { morning: 0, afternoon: 0, night: 0 };
+        let errorTracking = [];
+
+        for (let i = 27; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(nowTime.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            
+            // 撈取當天發文數量
+            const startOfDay = new Date(dateStr).setHours(0,0,0,0);
+            const endOfDay = new Date(dateStr).setHours(23,59,59,999);
+            const dayPosts = posts.filter(p => p.id >= startOfDay && p.id <= endOfDay);
+            const count = dayPosts.length;
+            
+            let level = 0;
+            if (count === 1) level = 1;
+            else if (count === 2) level = 2;
+            else if (count >= 3) level = 3;
+
+            const cell = document.createElement("div");
+            cell.className = "grass-cell";
+            cell.style.backgroundColor = `var(--grass-level-${level})`;
+            cell.setAttribute("data-tooltip", `${dateStr} : ${count}篇`);
+            grassGrid.appendChild(cell);
+        }
+
+        // 2. 🎬 靈感與定錨時段分析
+        posts.forEach(p => {
+            if (p.quoteUrl && p.quoteUrl.trim()) quoteCount++; 
+            else pureCount++;
+
+            // 拆解發文時間戳記分析慣性
+            if (p.time && p.time.includes(" ")) {
+                const hh = parseInt(p.time.split(" ")[1].split(":")[0]);
+                if (hh >= 5 && hh < 11) hourDistribution.morning++;
+                else if (hh >= 11 && hh < 18) hourDistribution.afternoon++;
+                else hourDistribution.night++;
+            }
+
+            // 3. 🎯 真正看見進步：Claude 錯誤率追蹤
+            if (p.aiComments && p.aiComments.claude) {
+                const text = p.aiComments.claude;
+                // 利用正則匹配出現了幾次句①、句②
+                const matches = text.match(/句[①-⑩]/g);
+                const errorCount = matches ? matches.length : 0;
+                errorTracking.push({ id: p.id, errs: errorCount });
+            }
+        });
+
+        // 渲染比例條
+        const total = quoteCount + pureCount;
+        if (total > 0) {
+            const qPct = ((quoteCount / total) * 100).toFixed(0);
+            const pPct = (100 - qPct).toFixed(0);
+            document.getElementById("ratioQuote").style.width = `${qPct}%`;
+            document.getElementById("ratioPure").style.width = `${pPct}%`;
+            document.getElementById("ratioText").innerText = `${qPct}% : ${pPct}%`;
+        } else {
+            document.getElementById("ratioText").innerText = "0% : 0%";
+        }
+
+        // 渲染時段成就
+        let maxPeriod = "night";
+        if (hourDistribution.morning > hourDistribution.afternoon && hourDistribution.morning > hourDistribution.night) maxPeriod = "morning";
+        if (hourDistribution.afternoon > hourDistribution.morning && hourDistribution.afternoon > hourDistribution.night) maxPeriod = "afternoon";
+        
+        const periodLabels = { morning: "朝型 (5:00~11:00)", afternoon: "昼型 (11:00~18:00)", night: "夜型 (18:00~5:00)" };
+        if (total > 0) {
+            document.getElementById("timeHabitText").innerText = `${periodLabels[maxPeriod]} の執筆家`;
+        } else {
+            document.getElementById("timeHabitText").innerText = "記録収集中...";
+        }
+
+        // 錯誤率進步消長指引
+        if (errorTracking.length >= 2) {
+            errorTracking.sort((a,b) => a.id - a.id); // 由舊到新
+            const recent = errorTracking.slice(-3); // 取最新三篇
+            const older = errorTracking.slice(0, -3);
+            
+            let avgRecent = recent.reduce((sum, x) => sum + x.errs, 0) / recent.length;
+            let avgOlder = older.length > 0 ? (older.reduce((sum, x) => sum + x.errs, 0) / older.length) : recent[0].errs;
+
+            if (avgRecent < avgOlder) {
+                document.getElementById("errorRateText").innerHTML = `📉 改善傾向 (最近の平均エラー箇所数: ${avgRecent.toFixed(1)}つ)`;
+            } else if (avgRecent > avgOlder) {
+                document.getElementById("errorRateText").innerHTML = `📈 上昇傾向 (弱点に挑戦中。平均: ${avgRecent.toFixed(1)}つ)`;
+            } else {
+                document.getElementById("errorRateText").innerHTML = `穩定 (平均エラー箇所数: ${avgRecent.toFixed(1)}つ)`;
+            }
+        } else {
+            document.getElementById("errorRateText").innerText = "Claude 添削が2回以上必要です";
+        }
     }
 
     function autoSaveDraft() { localStorage.setItem("jp_diary_draft", document.getElementById("postInput").value); }
@@ -359,10 +666,6 @@
         if(!target) return;
         
         const contentBox = document.getElementById(`content-${postId}`);
-        if (document.getElementById(`readmore-p-${postId}`)) {
-            document.getElementById(`readmore-p-${postId}`).style.display = 'none';
-        }
-
         contentBox.innerHTML = `
             <textarea id="textarea-${postId}" class="edit-textarea">${target.content}</textarea>
             <div style="display:flex; gap:6px; margin-top:8px; justify-content:flex-end;">
@@ -390,6 +693,7 @@
         btn.innerText = isBlock ? "添削・学習メモ" : "折りたたむ";
     }
 
+    // 優化後的有溫度無說教 Claude Prompt 產生引擎
     function requestAICorrection(aiType, postId, rawContent) {
         const container = document.getElementById(`comments-container-${postId}`);
         let node = document.getElementById(`comment-${aiType}-${postId}`);
@@ -397,32 +701,31 @@
         if (!node) {
             node = document.createElement("div");
             node.id = `comment-${aiType}-${postId}`;
-            node.className = `comment-node node-${aiType}`;
+            node.className = `comment-node`;
             setupCommentEditing(node, postId, aiType, "", "");
         }
         container.insertBefore(node, container.firstChild);
 
-        const promptText = `請幫我批改以下這段日文日記。\n「${decodeURIComponent(rawContent)}」\n\n請你「嚴格遵守以下格式與文字結構」進行回覆，不要添加 any 問候語，且全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n這篇日記……（請在此簡述讀完的整體感受），能感受到……（請在此描述感受到的氛圍或心情）。以下是詳細批改：\n\n＿＿\n批改與建議\n\n句① \n原句：（請貼上學生錯誤的原句）\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n（若有多個錯誤句子，請依此類推排下去：句②、句③……）\n\n【整體評價】\n詞彙量：（請給出簡短評價，例如：豐富，有在嘗試多樣表達）\n文法：（請指出強項或需要注意的地方）\n自然度：（請指出是否有直譯痕跡）\n表達深度：（請給予鼓勵或建議）\n\n（最後請用一小段話總結學生的盲點，例如：最常見的錯誤模式是……繼續加油！）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
+        const promptText = `請幫我批改以下這段日文日記。\n「${decodeURIComponent(rawContent)}」\n\n請你「嚴格遵守以下格式與文字結構」進行回覆。請先用日文順著日記內容給予一句簡短、有同理心的日常朋友關心或共鳴（例如：若內文覺得某事麻煩，請順著說「確かに面倒ですね。今は大丈夫ですか？」即可，絕對不要進行任何說教）。接著直接進行詳細批改。全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n（在此請用日文寫下一句順應日記內容的朋友關心與共鳴）\n\n＿＿\n批改與建議\n\n句① \n原句：（請貼上學生錯誤的原句）\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n（若有多個錯誤句子，請依此類推排下去：句②、句③……）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
         
         navigator.clipboard.writeText(promptText).then(() => {
-            alert("プロンプトをコピーしました！AIの画面に貼り付けてみてください。");
-            window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
+            alert("Claude用プロンプトをコピーしました！對話畫面將自動打開。");
+            window.open("https://claude.ai/", "_blank");
         }).catch(() => {
-            window.open(aiType === 'gemini' ? "https://gemini.google.com/" : "https://claude.ai/", "_blank");
+            window.open("https://claude.ai/", "_blank");
         });
     }
 
     function setupCommentEditing(node, postId, aiType, currentVal, currentUrl) {
-        const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
         node.innerHTML = `
             <div class="comment-user-bar">
                 <div class="comment-user-left">
-                    <div class="comment-avatar avatar-${aiType}"></div>
-                    <span class="comment-username user-${aiType}">${label}</span>
+                    <div class="comment-avatar"></div>
+                    <span class="comment-username">Claude</span>
                 </div>
             </div>
-            <textarea id="textarea-${aiType}-${postId}" class="comment-textarea" placeholder="ここにAIの返信結果を貼り付け...">${currentVal}</textarea>
-            <input type="text" id="urlinput-${aiType}-${postId}" class="comment-url-input" placeholder="🔗 AIの会話リンクを貼り付け（任意）" value="${currentUrl}">
+            <textarea id="textarea-${aiType}-${postId}" class="comment-textarea" placeholder="ここにClaudeの返信結果を貼り付け...">${currentVal}</textarea>
+            <input type="text" id="urlinput-${aiType}-${postId}" class="comment-url-input" placeholder="🔗 Claudeの会話リンクを貼り付け（任意）" value="${currentUrl}">
             <div style="display:flex; justify-content:flex-end; margin-top:6px;">
                 <button class="btn-base post-btn" style="font-size:11px; padding:4px 10px;" onclick="lockComment(${postId}, '${aiType}')">返信</button>
             </div>
@@ -443,10 +746,6 @@
             if(!posts[idx].aiUrls) posts[idx].aiUrls = {};
             posts[idx].aiUrls[aiType] = url;
 
-            if(!posts[idx].commentOrder) posts[idx].commentOrder = [];
-            posts[idx].commentOrder = posts[idx].commentOrder.filter(x => x !== aiType);
-            posts[idx].commentOrder.unshift(aiType);
-
             localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
             renderPosts();
         }
@@ -457,19 +756,15 @@
         setupCommentEditing(node, postId, aiType, decodeURIComponent(currentVal), decodeURIComponent(currentUrl));
     }
 
+    // 徹底修復：完全獨立運作的摺疊控制邏輯軌道
     function parseContentAndWrap(text, limit, keyId) {
         const hasTable = text.includes('|');
         let htmlResult = text;
 
-        if (hasTable) {
-            htmlResult = parseMarkdownTable(text);
-        } else {
-            htmlResult = escapeHtml(text).replace(/\n/g, '<br>');
-        }
+        if (hasTable) htmlResult = parseMarkdownTable(text);
+        else htmlResult = escapeHtml(text).replace(/\n/g, '<br>');
 
-        if (text.length <= limit) {
-            return { html: htmlResult, needsReadMore: false };
-        }
+        if (text.length <= limit) return { html: htmlResult, needsReadMore: false };
 
         const isExpanded = expandedStates[keyId] || false;
         if (isExpanded) {
@@ -488,22 +783,12 @@
 
     function parseMarkdownTable(text) {
         const lines = text.split('\n');
-        let inTable = false;
-        let tableHtml = '';
-        let resultHtml = '';
-
+        let inTable = false; let tableHtml = ''; let resultHtml = '';
         lines.forEach(line => {
             const trimmed = line.trim();
             if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
-                if (!inTable) {
-                    inTable = true;
-                    tableHtml = '<table>';
-                }
-                
-                if (trimmed.includes('---') || trimmed.includes('-:-')) {
-                    return;
-                }
-
+                if (!inTable) { inTable = true; tableHtml = '<table>'; }
+                if (trimmed.includes('---') || trimmed.includes('-:-')) return;
                 const cells = trimmed.split('|').map(c => c.trim()).filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
                 tableHtml += '<tr>';
                 cells.forEach(cell => {
@@ -512,24 +797,14 @@
                 });
                 tableHtml += '</tr>';
             } else {
-                if (inTable) {
-                    inTable = false;
-                    tableHtml += '</table>';
-                    resultHtml += tableHtml;
-                    tableHtml = '';
-                }
+                if (inTable) { inTable = false; tableHtml += '</table>'; resultHtml += tableHtml; tableHtml = ''; }
                 resultHtml += escapeHtml(line) + '<br>';
             }
         });
-
-        if (inTable) {
-            tableHtml += '</table>';
-            resultHtml += tableHtml;
-        }
+        if (inTable) { tableHtml += '</table>'; resultHtml += tableHtml; }
         return resultHtml;
     }
 
-    // 搜尋與篩選
     function searchPosts(keyword) {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const k = keyword.toLowerCase().trim();
@@ -538,10 +813,11 @@
         renderFeedList(filtered);
     }
 
+    // 弱點收集提示詞自動生成打包系統
     function generateSummary() {
         const start = document.getElementById("filterStart").value;
         const end = document.getElementById("filterEnd").value;
-        if (!start || !end) { alert("請選擇完整的開始與結束日期。"); return; }
+        if (!start || !end) { alert("日付を選択してください。"); return; }
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const startTime = new Date(start).setHours(0,0,0,0);
         const endTime = new Date(end).setHours(23,59,59,999);
@@ -549,20 +825,19 @@
 
         const box = document.getElementById("summaryBox");
         const content = document.getElementById("summaryContent");
-        if (filtered.length === 0) { content.innerText = "該期間內沒有任何日記紀錄。"; box.style.display = "block"; return; }
+        if (filtered.length === 0) { content.innerText = "指定期間内にデータがありません。"; box.style.display = "block"; return; }
 
-        let txt = `【指定期間日文日記統整報告】\n期間：${start} ~ ${end}\n\n`;
+        let txt = `以下是我在 ${start} ~ ${end} 期間寫日文日記時被批改的紀錄。請幫我分析我最常犯的文法錯誤、單字誤用或中文直譯盲點，並用繁體中文條列指出 3 個我需要特別注意的「核心誤區」，最後提供各 1 個針對這些弱點的練習建議。絕對不要說教。\n\n紀錄如下：\n`;
         filtered.forEach((p, idx) => {
-            txt += `--- 篇章 ${idx + 1} (${p.time}) ---\n【原文】：\n${p.content}\n`;
-            if (p.aiComments) {
-                if (p.aiComments.gemini) txt += `【Gemini 學習筆記】:\n${p.aiComments.gemini}\n`;
-                if (p.aiComments.claude) txt += `【Claude 學習筆記】:\n${p.aiComments.claude}\n`;
+            txt += `--- 日記日期：${p.time.split(" ")[0]} ---\n【日記本文】：\n${p.content}\n`;
+            if (p.aiComments && p.aiComments.claude) {
+                txt += `【Claude 批改內容】:\n${p.aiComments.claude}\n`;
             }
             txt += `\n`;
         });
         content.innerText = txt; box.style.display = "block";
     }
-    function copySummary() { navigator.clipboard.writeText(document.getElementById("summaryContent").innerText).then(() => alert("統整內容已複製！")); }
+    function copySummary() { navigator.clipboard.writeText(document.getElementById("summaryContent").innerText).then(() => alert("弱點分析提示詞已成功複製！快去貼給 Claude 吧。")); }
 
     function getLiveWeatherAndLocation() {
         if (!navigator.geolocation) return;
@@ -597,6 +872,7 @@
         if (!content) return;
         const targetDateVal = document.getElementById("postTargetDate").value;
         const todayStr = new Date().toISOString().split('T')[0];
+        const quoteUrl = document.getElementById("postQuoteUrl").value.trim();
         
         let finalId = Date.now(); let timestamp = ""; let weatherInfo = currentWeatherData;
 
@@ -610,13 +886,14 @@
             finalId = customDate.getTime(); weatherInfo = "過去の記録"; 
         }
 
-        const post = { id: finalId, time: timestamp, weather: weatherInfo, content: content, aiComments: {}, aiUrls: {}, commentOrder: [] };
+        const post = { id: finalId, time: timestamp, weather: weatherInfo, content: content, quoteUrl: quoteUrl, aiComments: {}, aiUrls: {} };
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         posts.push(post); posts.sort((a, b) => b.id - a.id);
         localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
 
         localStorage.removeItem("jp_diary_draft");
         document.getElementById("postInput").value = "";
+        document.getElementById("postQuoteUrl").value = "";
         document.getElementById("postTargetDate").value = todayStr;
         checkDraft(); renderPosts();
     }
@@ -624,6 +901,7 @@
     function renderPosts() {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         renderFeedList(posts);
+        updateStatsAndHabits();
     }
 
     function renderFeedList(posts) {
@@ -636,7 +914,14 @@
             const weatherString = post.weather ? `<span>${escapeHtml(post.weather)}</span>` : "";
             const encodedContent = encodeURIComponent(post.content);
 
-            // 解析日記原文（200字折疊）
+            // 引用小卡區塊
+            let quoteHtml = "";
+            if (post.quoteUrl && post.quoteUrl.trim()) {
+                let displayUrl = post.quoteUrl.length > 35 ? post.quoteUrl.substring(0, 35) + "..." : post.quoteUrl;
+                quoteHtml = `<div class="quote-badge">🔗 引用：<a href="${escapeHtml(post.quoteUrl)}" target="_blank">${escapeHtml(displayUrl)}</a></div>`;
+            }
+
+            // 日記原文摺疊
             const origKey = `p-${post.id}`;
             const origParse = parseContentAndWrap(post.content, 200, origKey);
             let origBtnHtml = "";
@@ -645,21 +930,14 @@
                 origBtnHtml = `<button id="readmore-${origKey}" class="readmore-btn" onclick="handleExpandToggle('${origKey}')">${label}</button>`;
             }
 
+            // 渲染 Claude 專屬留言
             let commentsHtml = "";
-            const order = post.commentOrder || [];
+            const val = post.aiComments ? (post.aiComments['claude'] || "") : "";
+            const chatUrl = post.aiUrls ? (post.aiUrls['claude'] || "") : "";
             
-            // 渲染 AI 留言
-            order.forEach(aiType => {
-                const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
-                const chatUrl = post.aiUrls ? (post.aiUrls[aiType] || "") : "";
-                if(!val) return;
-                const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
-                
-                // 套用同色系按鈕樣式
-                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link-${aiType}">会話をみる</a>` : "";
-
-                // 解析 AI 留言（200字折疊）
-                const commKey = `c-${aiType}-${post.id}`;
+            if (val) {
+                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link-claude">会話をみる</a>` : "";
+                const commKey = `c-claude-${post.id}`;
                 const commParse = parseContentAndWrap(val, 200, commKey);
                 let commBtnHtml = "";
                 if (commParse.needsReadMore) {
@@ -667,21 +945,21 @@
                     commBtnHtml = `<div><button id="readmore-${commKey}" class="readmore-btn" onclick="handleExpandToggle('${commKey}')">${btnLabel}</button></div>`;
                 }
 
-                commentsHtml += `
-                    <div id="comment-${aiType}-${post.id}" class="comment-node node-${aiType}">
+                commentsHtml = `
+                    <div id="comment-claude-${post.id}" class="comment-node">
                         <div class="comment-user-bar">
                             <div class="comment-user-left">
-                                <div class="comment-avatar avatar-${aiType}"></div>
-                                <span class="comment-username user-${aiType}">${label}</span>
+                                <div class="comment-avatar"></div>
+                                <span class="comment-username">Claude</span>
                                 ${urlBtnHtml}
                             </div>
-                            <span class="action-link" style="font-size:11px;" onclick="unlockComment(${post.id}, '${aiType}', \`${encodeURIComponent(val)}\`, \`${encodeURIComponent(chatUrl)}\`)">編集</span>
+                            <span style="font-size:11px; cursor:pointer; color:var(--text-muted);" onclick="unlockComment(${post.id}, 'claude', \`${encodeURIComponent(val)}\`, \`${encodeURIComponent(chatUrl)}\`)">編集</span>
                         </div>
                         <div class="comment-content">${commParse.html}</div>
                         ${commBtnHtml}
                     </div>
                 `;
-            });
+            }
 
             postEl.innerHTML = `
                 <div class="post-menu-container">
@@ -699,6 +977,8 @@
                         <div class="meta-info"><span>${post.time}</span>${weatherString}</div>
                     </div>
                 </div>
+                
+                ${quoteHtml}
                 <div class="post-content" id="content-${post.id}">${origParse.html}</div>
                 ${origBtnHtml}
                 
@@ -707,10 +987,8 @@
                 </div>
 
                 <div id="panel-${post.id}" class="interactive-panel">
-                    <div style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">どちらのAIに頼みますか？</div>
                     <div class="ai-select-row">
-                        <button class="ai-mini-btn ai-btn-gemini" onclick="requestAICorrection('gemini', ${post.id}, '${encodedContent}')">Gemini</button>
-                        <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection('claude', ${post.id}, '${encodedContent}')">Claude</button>
+                        <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection('claude', ${post.id}, '${encodedContent}')">Claudeに添削を頼む (プロンプトコピー)</button>
                     </div>
                     <div id="comments-container-${post.id}" class="comments-container">
                         ${commentsHtml}
@@ -736,22 +1014,11 @@
             try {
                 const imported = JSON.parse(e.target.result);
                 if (Array.isArray(imported)) {
-                    if (confirm("匯入將會覆蓋目前的紀錄，確定繼續嗎？")) { localStorage.setItem("jp_sns_posts", JSON.stringify(imported)); renderPosts(); alert("還原日記成功！"); }
-                } else { alert("檔案格式不符。"); }
-            } catch (err) { alert("讀取檔案失敗。"); }
+                    if (confirm("復元すると現在の記録が上書きされます。よろしいですか？")) { localStorage.setItem("jp_sns_posts", JSON.stringify(imported)); renderPosts(); alert("復元が完了しました！"); }
+                } else { alert("形式が正しくありません。"); }
+            } catch (err) { alert("ファイルの読み込みに失敗しました。"); }
         };
         reader.readAsText(file); input.value = "";
-    }
-    function exportCSV() {
-        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        if (posts.length === 0) { alert("沒有日記紀錄可以導出。"); return; }
-        let csv = "\uFEFF日期時間,天氣地點,日記原文\n";
-        posts.forEach(p => { csv += `"${p.time}","${(p.weather || "")}","${p.content.replace(/"/g, '""')}"\n`; });
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url;
-        a.download = `my_diary_${new Date().toISOString().slice(0,10)}.csv`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     }
     function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
 </script>
