@@ -82,7 +82,7 @@
         /* 按鈕風格 */
         .btn-base {
             font-family: inherit; border: none; border-radius: 20px; padding: 8px 18px;
-            font-weight: 700; font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+            font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s;
         }
         .btn-base:active { opacity: 0.8; }
         .draft-btn { background-color: #e9ecef; color: #495057; }
@@ -96,61 +96,75 @@
         }
         .post-box textarea {
             width: 100%; height: 100px; background: transparent; border: none;
-            color: var(--text-color); font-size: 16px; resize: none; line-height: 1.6;
+            color: var(--text-color); font-size: 14px; resize: none; line-height: 1.6;
         }
         .post-box textarea:focus { outline: none; }
-        .weather-status { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .weather-status { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
         
         /* 搜尋欄位 */
         .search-input {
             width: 100%; font-family: inherit; border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 8px 12px; font-size: 13px; outline: none; margin-bottom: 12px;
+            border-radius: 12px; padding: 8px 12px; font-size: 12px; outline: none; margin-bottom: 12px;
         }
 
         /* 動態牆 */
         .feed { display: flex; flex-direction: column; gap: 16px; }
         .post {
+            position: relative;
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(129, 165, 222, 0.05);
         }
-        .post-header { display: flex; align-items: center; margin-bottom: 12px; }
+        .post-header { display: flex; align-items: center; margin-bottom: 12px; padding-right: 24px; }
         .avatar {
-            width: 38px; height: 38px; border-radius: 50%; background-color: var(--color-avatar-bg);
-            margin-right: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+            width: 36px; height: 36px; border-radius: 50%; background-color: var(--color-avatar-bg);
+            margin-right: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px;
         }
-        .username { font-weight: 700; font-size: 15px; }
+        .username { font-weight: 700; font-size: 14px; }
         .meta-info { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; margin-top: 2px; }
+        
+        /* 右上角功能選單 */
+        .post-menu-container {
+            position: absolute; top: 16px; right: 16px;
+        }
+        .post-menu-trigger {
+            background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); padding: 0 4px; line-height: 1;
+        }
+        .post-menu-dropdown {
+            display: none; position: absolute; top: 20px; right: 0; background: white;
+            border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 80; min-width: 90px; overflow: hidden;
+        }
+        .post-menu-item {
+            padding: 8px 12px; font-size: 12px; cursor: pointer; text-align: left; color: var(--text-color);
+        }
+        .post-menu-item:hover { background-color: #f8f9fa; }
         
         /* 內容與摺疊 */
         .post-content {
-            font-family: 'Noto Serif JP', serif; font-size: 16px; line-height: 1.75;
+            font-family: 'Noto Serif JP', serif; font-size: 14px; line-height: 1.75;
             white-space: pre-wrap; margin-bottom: 6px; color: #2c2c2c;
         }
         .edit-textarea {
             width: 100%; height: 90px; border: 1px solid var(--color-mango);
-            border-radius: 12px; padding: 8px; font-family: inherit; font-size: 15px; resize: none; outline: none;
+            border-radius: 12px; padding: 8px; font-family: inherit; font-size: 14px; resize: none; outline: none;
         }
         .readmore-btn {
-            background: none; border: none; color: var(--color-mango); font-size: 13px;
+            background: none; border: none; color: var(--color-mango); font-size: 12px;
             font-weight: 700; cursor: pointer; padding: 4px 0; margin-bottom: 10px; display: inline-block;
         }
-        
-        .post-action-bar { display: flex; gap: 12px; margin-top: 4px; font-size: 12px; color: var(--text-muted); }
-        .action-link { cursor: pointer; font-weight: 500; }
-        .action-link:hover { color: var(--color-mango); }
 
         .comment-style-toggle {
-            font-family: inherit; font-size: 13px; color: #6d7a1c; background: #f4f6ec;
-            border: none; border-radius: 12px; padding: 8px 14px; cursor: pointer; font-weight: 700; margin-top: 12px;
+            font-family: inherit; font-size: 12px; color: #6d7a1c; background: #f4f6ec;
+            border: none; border-radius: 12px; padding: 6px 12px; cursor: pointer; font-weight: 700; margin-top: 8px;
         }
 
         .interactive-panel { display: none; margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px; }
         .ai-select-row { display: flex; gap: 8px; margin-bottom: 12px; }
-        .ai-mini-btn { flex: 1; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; }
+        .ai-mini-btn { flex: 1; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: none; }
         .ai-btn-gemini { background: #e8f0fe; color: var(--color-gemini); }
         .ai-btn-claude { background: #fdf2ee; color: var(--color-claude); }
 
-        /* 留言區與超級防變形表格系統 */
+        /* 留言區與防變形表格系統 */
         .comments-container { display: flex; flex-direction: column; gap: 10px; }
         .comment-node {
             background-color: #fafbfc; border-left: 4px solid var(--border-color);
@@ -161,28 +175,35 @@
         
         .comment-user-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
         .comment-user-left { display: flex; align-items: center; gap: 8px; }
-        .comment-avatar { width: 22px; height: 22px; border-radius: 50%; }
+        .comment-avatar { width: 20px; height: 20px; border-radius: 50%; }
         .avatar-gemini { background-color: var(--color-gemini); }
         .avatar-claude { background-color: var(--color-claude); }
         .comment-username { font-size: 12px; font-weight: 700; }
         
-        /* 会話をみる 按鈕樣式 */
-        .ai-chat-link {
-            font-size: 11px; font-weight: 700; color: var(--color-mango);
-            text-decoration: none; background: #fff0e6; padding: 2px 8px; border-radius: 8px;
+        /* 会話をみる 按鈕樣式（同色系優化） */
+        .ai-chat-link-gemini {
+            font-size: 11px; font-weight: 700; color: var(--color-gemini);
+            text-decoration: none; background: #e8f0fe; padding: 2px 8px; border-radius: 8px;
             transition: background 0.2s;
         }
-        .ai-chat-link:hover { background: #ffd9c2; }
+        .ai-chat-link-gemini:hover { background: #d2e3fc; }
+        
+        .ai-chat-link-claude {
+            font-size: 11px; font-weight: 700; color: var(--color-claude);
+            text-decoration: none; background: #fdf2ee; padding: 2px 8px; border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .ai-chat-link-claude:hover { background: #fbe4da; }
         
         /* 表格防變形渲染核心 CSS */
         .comment-content { 
-            font-size: 14px; color: #444; line-height: 1.6; 
+            font-size: 13px; color: #444; line-height: 1.6; 
             white-space: pre-wrap; width: 100%;
         }
         .comment-content table {
             border-collapse: collapse; width: 100%; margin: 8px 0;
-            font-size: 13px; background: white; display: block; overflow-x: auto; /* 啟動橫向滑動 */
-            white-space: nowrap; /* 強制不換行防止擠壓變形 */
+            font-size: 12px; background: white; display: block; overflow-x: auto;
+            white-space: nowrap;
         }
         .comment-content th, .comment-content td {
             border: 1px solid #dee2e6; padding: 6px 10px; text-align: left;
@@ -191,7 +212,7 @@
 
         .comment-textarea {
             width: 100%; height: 90px; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 6px; font-size: 13px; resize: none; outline: none; font-family: inherit;
+            border-radius: 10px; padding: 6px; font-size: 12px; resize: none; outline: none; font-family: inherit;
             margin-bottom: 6px;
         }
         .comment-url-input {
@@ -216,50 +237,50 @@
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">検索（搜尋文章）</div>
+        <div class="sidebar-title">検索</div>
         <input type="text" id="sidebarSearch" class="search-input" placeholder="キーワードを入力..." oninput="searchPosts(this.value)">
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">期間指定で統整（日期統整）</div>
+        <div class="sidebar-title">期間指定で集計</div>
         <input type="date" id="filterStart" class="search-input" style="margin-bottom:6px;">
         <input type="date" id="filterEnd" class="search-input" style="margin-bottom:10px;">
-        <button class="btn-base post-btn" style="width:100%; font-size:12px; padding:6px;" onclick="generateSummary()">指定期間で統整</button>
+        <button class="btn-base post-btn" style="width:100%; font-size:11px; padding:6px;" onclick="generateSummary()">指定期間で統整</button>
         <div id="summaryBox" style="display:none; margin-top:10px; background:#f8f9fa; padding:10px; border-radius:10px; border:1px solid var(--border-color);">
             <div id="summaryContent" style="font-size:11px; white-space:pre-wrap; max-height:100px; overflow-y:auto; margin-bottom:6px; background:white; padding:6px; border-radius:6px;"></div>
-            <button class="btn-base draft-btn" style="font-size:10px; padding:4px 8px; width:100%;" onclick="copySummary()">コピー</button>
+            <button class="btn-base draft-btn" style="font-size:11px; padding:4px 8px; width:100%;" onclick="copySummary()">コピー</button>
         </div>
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">学習進捗（學習統計）</div>
-        <div id="statsBox" style="font-size:12px; color:#555; line-height:1.6;">日記総数：0篇<br>AIフィードバック：0回</div>
+        <div class="sidebar-title">学習進捗</div>
+        <div id="statsBox" style="font-size:11px; color:#555; line-height:1.6;">日記総数：0篇<br>AIフィードバック：0回</div>
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">設定（使用者設定）</div>
+        <div class="sidebar-title">設定</div>
         <input type="text" id="settingsUsername" class="search-input" value="リカ" onchange="saveUserProfile()" placeholder="ユーザー名修改">
     </div>
 
     <div class="sidebar-section">
-        <div class="sidebar-title">データ管理（備份）</div>
-        <button class="btn-base draft-btn" style="width:100%; font-size:12px; padding:6px; margin-bottom:6px;" onclick="exportJSON()">日記をバックアップ (JSON)</button>
-        <label class="btn-base draft-btn" style="display:block; text-align:center; font-size:12px; padding:6px; margin-bottom:6px;">
+        <div class="sidebar-title">データ管理</div>
+        <button class="btn-base draft-btn" style="width:100%; font-size:11px; padding:6px; margin-bottom:6px;" onclick="exportJSON()">日記をバックアップ (JSON)</button>
+        <label class="btn-base draft-btn" style="display:block; text-align:center; font-size:11px; padding:6px; margin-bottom:6px;">
             バックアップを復元 (JSON)
             <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJSON(this)">
         </label>
-        <button class="btn-base draft-btn" style="width:100%; font-size:12px; padding:6px;" onclick="exportCSV()">Excel/CSVに出力</button>
+        <button class="btn-base draft-btn" style="width:100%; font-size:11px; padding:6px;" onclick="exportCSV()">Excel/CSVに出力</button>
     </div>
 
     <div class="sidebar-section" style="border:none; margin-top:auto; padding-top:20px; text-align:center; font-size:11px; color:var(--text-muted);">
-        バージョン：v2.7.0<br>最終更新：2026/06/10
+        バージョン：v2.8.0<br>最終更新：2026/06/12
     </div>
 </div>
 
 <div class="container">
     <div id="draftArea" style="display:none; background:#f8f9fa; border:1px solid #e9ecef; border-radius:14px; padding:12px; margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:700; color:#6c757d; margin-bottom:6px;">下書き</div>
-        <div id="draftContent" style="font-size:14px; color:#333; background:white; padding:10px; border-radius:8px; border:1px solid #dee2e6; cursor:pointer;" onclick="loadDraft()"></div>
+        <div style="font-size:11px; font-weight:700; color:#6c757d; margin-bottom:6px;">下書き</div>
+        <div id="draftContent" style="font-size:13px; color:#333; background:white; padding:10px; border-radius:8px; border:1px solid #dee2e6; cursor:pointer;" onclick="loadDraft()"></div>
     </div>
 
     <div class="post-box">
@@ -285,7 +306,6 @@
     const USER_AVATAR = "🌷";
     let currentWeatherData = "位置情報オフ";
 
-    // 全局狀態暫存展開收合
     let expandedStates = {};
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -294,6 +314,11 @@
         renderPosts();
         checkDraft();
         getLiveWeatherAndLocation();
+        
+        // 點擊任意處關閉右上角選單
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".post-menu-dropdown").forEach(el => el.style.display = "none");
+        });
     });
 
     function toggleSidebar(open) {
@@ -315,9 +340,18 @@
     }
 
     function autoSaveDraft() { localStorage.setItem("jp_diary_draft", document.getElementById("postInput").value); }
-    function manualSaveDraft() { const content = document.getElementById("postInput").value.trim(); if (!content) return; localStorage.setItem("jp_diary_draft", content); checkDraft(); alert("下書きを保存しました！"); }
+    function manualSaveDraft() { const content = document.getElementById("postInput").value.trim(); if (!content) return; localStorage.setItem("jp_diary_draft", content); checkDraft(); alert("下書きを保存しました"); }
     function checkDraft() { const d = localStorage.getItem("jp_diary_draft"); const area = document.getElementById("draftArea"); if (d && d.trim()) { area.style.display = "block"; document.getElementById("draftContent").innerText = d.length > 25 ? d.substring(0, 25) + "..." : d; } else { area.style.display = "none"; } }
     function loadDraft() { document.getElementById("postInput").value = localStorage.getItem("jp_diary_draft"); }
+
+    function togglePostMenu(e, postId) {
+        e.stopPropagation();
+        document.querySelectorAll(".post-menu-dropdown").forEach(el => {
+            if(el.id !== `menu-${postId}`) el.style.display = "none";
+        });
+        const menu = document.getElementById(`menu-${postId}`);
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
 
     function editPost(postId) {
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
@@ -368,7 +402,7 @@
         }
         container.insertBefore(node, container.firstChild);
 
-        const promptText = `請幫我批改以下這段日文日記。\n請你「嚴格遵守以下格式與文字結構」進行回覆，不要添加任何問候語，且全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n這篇日記……（請在此簡述讀完的整體感受），能感受到……（請在此描述感受到的氛圍或心情）。以下是詳細批改：\n\n＿＿\n批改與建議\n\n句①\n原文：\n「${decodeURIComponent(rawContent)}」\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n【整體評價】\n詞彙量：（請給出簡短評價，例如：豐富，有在嘗試多樣表達）\n文法：（請指出強項或需要注意的地方）\n自然度：（請指出是否有直譯痕跡）\n表達深度：（請給予鼓勵或建議）\n\n（最後請用一小段話總結學生的盲點，繼續加油！）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
+        const promptText = `請幫我批改以下這段日文日記。\n「${decodeURIComponent(rawContent)}」\n\n請你「嚴格遵守以下格式與文字結構」進行回覆，不要添加 any 問候語，且全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n這篇日記……（請在此簡述讀完的整體感受），能感受到……（請在此描述感受到的氛圍或心情）。以下是詳細批改：\n\n＿＿\n批改與建議\n\n句① \n原句：（請貼上學生錯誤的原句）\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n（若有多個錯誤句子，請依此類推排下去：句②、句③……）\n\n【整體評價】\n詞彙量：（請給出簡短評價，例如：豐富，有在嘗試多樣表達）\n文法：（請指出強項或需要注意的地方）\n自然度：（請指出是否有直譯痕跡）\n表達深度：（請給予鼓勵或建議）\n\n（最後請用一小段話總結學生的盲點，例如：最常見的錯誤模式是……繼續加油！）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
         
         navigator.clipboard.writeText(promptText).then(() => {
             alert("プロンプトをコピーしました！AIの画面に貼り付けてみてください。");
@@ -407,7 +441,7 @@
             posts[idx].aiComments[aiType] = text;
 
             if(!posts[idx].aiUrls) posts[idx].aiUrls = {};
-            posts[idx].aiUrls[aiType] = url; // 儲存備忘網址
+            posts[idx].aiUrls[aiType] = url;
 
             if(!posts[idx].commentOrder) posts[idx].commentOrder = [];
             posts[idx].commentOrder = posts[idx].commentOrder.filter(x => x !== aiType);
@@ -423,7 +457,6 @@
         setupCommentEditing(node, postId, aiType, decodeURIComponent(currentVal), decodeURIComponent(currentUrl));
     }
 
-    // 核心處理：字數偵測與超強防變形 Markdown 表格解析器
     function parseContentAndWrap(text, limit, keyId) {
         const hasTable = text.includes('|');
         let htmlResult = text;
@@ -453,7 +486,6 @@
         renderPosts();
     }
 
-    // 將 Markdown 表格精準渲染為漂亮不扭曲網格的引擎
     function parseMarkdownTable(text) {
         const lines = text.split('\n');
         let inTable = false;
@@ -497,6 +529,7 @@
         return resultHtml;
     }
 
+    // 搜尋與篩選
     function searchPosts(keyword) {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const k = keyword.toLowerCase().trim();
@@ -608,29 +641,29 @@
             const origParse = parseContentAndWrap(post.content, 200, origKey);
             let origBtnHtml = "";
             if (origParse.needsReadMore) {
-                const label = origParse.isExpanded ? "折りたたむ（收起全文）" : "... 続きを読む（展開全文）";
+                const label = origParse.isExpanded ? "折りたたむ" : "... 続きを読む";
                 origBtnHtml = `<button id="readmore-${origKey}" class="readmore-btn" onclick="handleExpandToggle('${origKey}')">${label}</button>`;
             }
 
             let commentsHtml = "";
             const order = post.commentOrder || [];
             
-            // 渲染已鎖定發布的 AI 留言
+            // 渲染 AI 留言
             order.forEach(aiType => {
                 const val = post.aiComments ? (post.aiComments[aiType] || "") : "";
                 const chatUrl = post.aiUrls ? (post.aiUrls[aiType] || "") : "";
                 if(!val) return;
                 const label = aiType === 'gemini' ? 'Gemini' : 'Claude';
                 
-                // 判斷是否有對話網址，若有則生成連結按鈕
-                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link">会話をみる</a>` : "";
+                // 套用同色系按鈕樣式
+                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link-${aiType}">会話をみる</a>` : "";
 
-                // 解析 AI 留言內容（200字折疊 + 自動排版表格）
+                // 解析 AI 留言（200字折疊）
                 const commKey = `c-${aiType}-${post.id}`;
                 const commParse = parseContentAndWrap(val, 200, commKey);
                 let commBtnHtml = "";
                 if (commParse.needsReadMore) {
-                    const btnLabel = commParse.isExpanded ? "折りたたむ（收起全文）" : "... 続きを読む（展開全文）";
+                    const btnLabel = commParse.isExpanded ? "折りたたむ" : "... 続きを読む";
                     commBtnHtml = `<div><button id="readmore-${commKey}" class="readmore-btn" onclick="handleExpandToggle('${commKey}')">${btnLabel}</button></div>`;
                 }
 
@@ -651,6 +684,14 @@
             });
 
             postEl.innerHTML = `
+                <div class="post-menu-container">
+                    <button class="post-menu-trigger" onclick="togglePostMenu(event, ${post.id})">⋯</button>
+                    <div id="menu-${post.id}" class="post-menu-dropdown">
+                        <div class="post-menu-item" onclick="editPost(${post.id})">編集する</div>
+                        <div class="post-menu-item" style="color:#ff5c5c;" onclick="deletePost(${post.id})">削除する</div>
+                    </div>
+                </div>
+
                 <div class="post-header">
                     <div class="avatar"><span>${escapeHtml(USER_AVATAR)}</span></div>
                     <div style="display:flex; flex-direction:column;">
@@ -661,12 +702,9 @@
                 <div class="post-content" id="content-${post.id}">${origParse.html}</div>
                 ${origBtnHtml}
                 
-                <div class="post-action-bar" id="actions-${post.id}">
-                    <span class="action-link" onclick="editPost(${post.id})">編集する</span>
-                    <span class="action-link" style="color:#ff5c5c;" onclick="deletePost(${post.id})">削除する</span>
+                <div style="margin-top:4px;">
+                    <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">添削・学習メモ</button>
                 </div>
-
-                <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">添削・学習メモ</button>
 
                 <div id="panel-${post.id}" class="interactive-panel">
                     <div style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">どちらのAIに頼みますか？</div>
