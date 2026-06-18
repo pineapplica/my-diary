@@ -82,7 +82,7 @@
         
         .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 14px; }
         
-        /* 按鈕風格全站一致化 */
+        /* 按鈕全站一致化 */
         .btn-base {
             font-family: 'Noto Sans JP', sans-serif; border: none; border-radius: 20px; padding: 8px 18px;
             font-weight: 700; font-size: 12px; cursor: pointer; transition: opacity 0.2s, background-color 0.2s;
@@ -91,13 +91,10 @@
         .draft-btn { background-color: var(--border-color); color: var(--text-color); opacity: 0.9; }
         .post-btn { background-color: var(--color-theme); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
-        /* 獨立懸浮的當日小語問候區 */
-        .greeting-banner-box {
-            font-size: 12px; color: var(--text-muted); font-weight: 500; 
-            margin-bottom: 10px; padding: 4px 8px; line-height: 1.5;
-        }
+        /* 獨立當日手帳提示小語 */
+        .greeting-banner-box { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 10px; padding: 4px 8px; line-height: 1.5; }
 
-        /* 發文區 */
+        /* 發文區結構 */
         .post-box {
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 16px; margin-bottom: 16px;
@@ -109,22 +106,56 @@
             color: var(--text-color); font-size: 14px; resize: none; line-height: 1.6; font-family: inherit;
         }
         .post-box textarea:focus { outline: none; }
-        .weather-status { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+        .weather-status { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
         
+        /* 心情與標籤晶片選擇列 */
+        .selector-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .selector-label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 6px; }
+        
+        /* Pinterest 幾何低聚物美學圓鈕 */
+        .mood-chip {
+            font-size: 12px; padding: 6px 14px; border-radius: 18px; cursor: pointer;
+            border: 1px solid var(--border-color); background: rgba(200,200,200,0.1);
+            color: var(--text-muted); font-weight: 500; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mood-chip.active[data-mood="晴れ"] { background: #FFF4D4; color: #735D1A; border-color: #E6D08E; box-shadow: 0 2px 6px rgba(230,208,142,0.4); transform: scale(1.04); }
+        .mood-chip.active[data-mood="くもり"] { background: #E3F2FD; color: #1E466A; border-color: #BBDEFB; box-shadow: 0 2px 6px rgba(187,222,251,0.4); transform: scale(1.04); }
+        .mood-chip.active[data-mood="雨"] { background: #E0F2F1; color: #004D40; border-color: #B2DFDB; box-shadow: 0 2px 6px rgba(178,223,219,0.4); transform: scale(1.04); }
+        .mood-chip.active[data-mood="風"] { background: #F3E5F5; color: #4A148C; border-color: #E1BEE7; box-shadow: 0 2px 6px rgba(225,190,231,0.4); transform: scale(1.04); }
+
+        .tag-chip {
+            font-size: 11px; padding: 4px 10px; border-radius: 12px; cursor: pointer;
+            border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color);
+            transition: all 0.2s;
+        }
+        .tag-chip.active { background: var(--color-theme); color: #fff; border-color: var(--color-theme); }
+
         .search-input {
             width: 100%; font-family: inherit; border: 1px solid var(--border-color);
             border-radius: 12px; padding: 8px 12px; font-size: 12px; outline: none; margin-bottom: 12px;
             background: var(--bg-color); color: var(--text-color);
         }
 
-        /* 動態牆 */
+        /* 動態牆與趨近道地（發光）卡片設計 */
         .feed { display: flex; flex-direction: column; gap: 16px; }
         .post {
             position: relative;
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.4s ease;
         }
+        
+        /* NATURAL_EXPRESSION 雙線與智慧呼吸光暈邊框 */
+        .post.natural-certified {
+            border: 3px double var(--color-theme) !important;
+            animation: cardGlow 3s infinite alternate ease-in-out;
+        }
+        @keyframes cardGlow {
+            0% { box-shadow: 0 4px 12px rgba(0,0,0,0.02), 0 0 4px var(--color-theme)33; }
+            100% { box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 0 16px var(--color-theme)80; }
+        }
+
         .post-header { display: flex; align-items: center; margin-bottom: 12px; padding-right: 24px; }
         .avatar {
             width: 36px; height: 36px; border-radius: 50%; background-color: var(--color-avatar-bg);
@@ -132,21 +163,19 @@
             transition: background-color 0.3s;
         }
         .username { font-weight: 700; font-size: 14px; }
-        .meta-info { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; margin-top: 2px; }
+        .meta-info { font-size: 11px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
         
-        /* 智慧抽出型引用連結外觀 */
+        .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+        .card-tag-item { font-size: 10px; color: var(--color-theme); font-weight: 700; background: rgba(200,200,200,0.1); padding: 2px 6px; border-radius: 6px; }
+
         .quote-badge {
             background: var(--bg-color); border: 1px solid var(--border-color);
             border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-bottom: 12px;
             display: flex; flex-direction: column; gap: 2px; max-width: 100%;
         }
         .quote-title { font-size: 11px; font-weight: 700; color: var(--text-muted); }
-        .quote-badge a {
-            color: var(--color-theme); text-decoration: none; font-weight: 700;
-            white-space: nowrap; text-overflow: ellipsis; overflow: hidden;
-        }
+        .quote-badge a { color: var(--color-theme); text-decoration: none; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
         
-        /* 功能選單 */
         .post-menu-container { position: absolute; top: 16px; right: 16px; }
         .post-menu-trigger { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); padding: 0 4px; }
         .post-menu-dropdown {
@@ -157,21 +186,14 @@
         .post-menu-item { padding: 8px 12px; font-size: 12px; cursor: pointer; text-align: left; color: var(--text-color); }
         .post-menu-item:hover { background-color: var(--bg-color); }
         
-        .post-content {
-            font-family: 'Noto Serif JP', serif; font-size: 14px; line-height: 1.75;
-            white-space: pre-wrap; margin-bottom: 6px; color: var(--text-color);
-        }
+        .post-content { font-family: 'Noto Serif JP', serif; font-size: 14px; line-height: 1.75; white-space: pre-wrap; margin-bottom: 6px; color: var(--text-color); }
         
-        /* 放大並修復字體不一致的編輯區 */
         .edit-container { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; width: 100%; }
         .edit-textarea {
             width: 100%; height: 140px; border: 1px solid var(--color-theme); background: var(--bg-color); color: var(--text-color);
             border-radius: 14px; padding: 12px; font-family: 'Noto Sans JP', sans-serif; font-size: 14px; resize: none; outline: none; line-height: 1.6;
         }
-        .readmore-btn {
-            background: none; border: none; color: var(--color-theme); font-size: 12px;
-            font-weight: 700; cursor: pointer; padding: 4px 0; margin-bottom: 10px; display: inline-block;
-        }
+        .readmore-btn { background: none; border: none; color: var(--color-theme); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 0; margin-bottom: 10px; display: inline-block; }
 
         .comment-style-toggle {
             font-family: inherit; font-size: 12px; color: var(--text-color); background: var(--color-subtheme);
@@ -183,23 +205,17 @@
         .ai-mini-btn { flex: 1; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; }
         .ai-btn-claude { background: var(--bg-color); color: var(--color-claude); border: 1px solid var(--border-color); }
 
-        /* Claude 專屬留言板結構 */
-        .comments-container { display: flex; flex-direction: column; gap: 10px; }
+        /* 切碎後的智慧對話留言泡泡結構 */
+        .comments-container { display: flex; flex-direction: column; gap: 12px; }
         .comment-node {
             background-color: var(--bg-color); border-left: 4px solid var(--color-claude);
-            padding: 10px 12px; border-radius: 0 14px 14px 0; border-top: 1px solid var(--border-color);
+            padding: 12px; border-radius: 0 14px 14px 0; border-top: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
         }
         .comment-user-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
         .comment-user-left { display: flex; align-items: center; gap: 8px; }
         .comment-avatar { width: 20px; height: 20px; border-radius: 50%; background-color: var(--color-claude); }
         .comment-username { font-size: 12px; font-weight: 700; }
-        
-        .ai-chat-link-claude {
-            font-size: 11px; font-weight: 700; color: var(--color-claude);
-            text-decoration: none; background: var(--card-bg); padding: 2px 8px; border-radius: 8px;
-            border: 1px solid var(--border-color); transition: background 0.2s;
-        }
         
         .comment-content { font-size: 13px; color: var(--text-color); line-height: 1.6; white-space: pre-wrap; width: 100%; }
         .comment-content table {
@@ -209,44 +225,70 @@
         .comment-content th, .comment-content td { border: 1px solid var(--border-color); padding: 6px 10px; text-align: left; }
         .comment-content th { background-color: var(--border-color); font-weight: bold; }
 
-        /* 修正 Claude 輸入區高度與字體 */
         .comment-edit-box { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+        /* 拿掉 URL 欄位後的專屬純粹批改黏貼框 */
         .comment-textarea {
-            width: 100%; height: 130px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
+            width: 100%; height: 160px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
             border-radius: 12px; padding: 10px; font-size: 13px; resize: none; outline: none; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6;
         }
-        .comment-url-input {
-            width: 100%; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
-            border-radius: 8px; padding: 6px 10px; font-size: 11px; outline: none; font-family: inherit;
-        }
 
-        /* 數據面板：習慣草皮 */
+        /* 數據中心：草皮區域 */
         .grass-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 8px; }
-        .grass-cell { width: 100%; aspect-ratio: 1; border-radius: 3px; background-color: var(--border-color); position: relative; cursor: pointer; }
+        
+        /* 五圓點幾何白色實心小花（發光呼吸感）渲染 */
+        .grass-cell { 
+            width: 100%; aspect-ratio: 1; border-radius: 3px; background-color: var(--border-color); 
+            position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
         .grass-cell::after {
             content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
             background: #333; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px;
             white-space: nowrap; display: none; z-index: 10;
         }
         .grass-cell:hover::after { display: block; }
+        
+        /* 智慧多花渲染器容器 */
+        .flower-cluster {
+            display: flex; flex-wrap: wrap; width: 85%; height: 85%;
+            align-items: center; justify-content: center; gap: 1px;
+        }
+        /* 5圓點拼成之白色實心花朵幾何體 */
+        .mini-daisy {
+            width: 8px; height: 8px; position: relative;
+            animation: daisyGlow 3s infinite alternate ease-in-out;
+        }
+        .mini-daisy::before {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: #fff; border-radius: 50%;
+            box-shadow: 0 -3px 0 #fff, 0 3px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 0 0 1px rgba(200,200,200,0.1);
+        }
+        @keyframes daisyGlow {
+            0% { transform: scale(0.9); filter: drop-shadow(0 0 1px var(--color-theme)); }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 4px var(--color-theme)); }
+        }
 
-        /* 數據面板：單條比例圖 */
         .ratio-bar-wrapper { height: 14px; width: 100%; background: var(--border-color); border-radius: 7px; overflow: hidden; display: flex; margin-top: 6px; }
         .ratio-segment-quote { background: var(--color-theme); height: 100%; transition: width 0.3s; }
         .ratio-segment-pure { background: var(--color-subtheme); height: 100%; transition: width 0.3s; }
 
-        /* 方圓形高質感智慧調色盤 */
         .theme-picker-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px; }
         .color-picker-wrapper {
             position: relative; width: 34px; height: 24px; border-radius: 6px; 
             border: 1px solid var(--border-color); overflow: hidden; cursor: pointer;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
-        .color-picker-wrapper input[type="color"] {
-            position: absolute; top: -5px; left: -5px; width: 50px; height: 40px; 
-            cursor: pointer; border: none; background: transparent; padding: 0;
-        }
+        .color-picker-wrapper input[type="color"] { position: absolute; top: -5px; left: -5px; width: 50px; height: 40px; cursor: pointer; border: none; background: transparent; padding: 0; }
         .date-separator { padding: 0 4px; font-weight: bold; color: var(--text-muted); }
+
+        /* Pinterest 通透毛玻璃圓餅統計圖框架 */
+        .mood-chart-result-box {
+            margin-top: 10px; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); padding: 12px; border-radius: 14px; display: none;
+        }
+        .mood-bar-row { display: flex; align-items: center; margin-bottom: 6px; font-size: 11px; gap: 8px; }
+        .mood-bar-label { width: 50px; font-weight: 700; }
+        .mood-bar-track { flex: 1; height: 10px; background: rgba(0,0,0,0.05); border-radius: 5px; overflow: hidden; }
+        .mood-bar-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body>
@@ -266,14 +308,16 @@
 
     <div class="sidebar-section">
         <div class="sidebar-title">検索</div>
-        <input type="text" id="sidebarSearch" class="search-input" placeholder="キーワードを入力..." oninput="searchPosts(this.value)">
+        <input type="text" id="sidebarSearch" class="search-input" placeholder="キーワード、または下部タグをタップ..." oninput="searchPostsByKeyword(this.value)">
+        <div style="font-size:11px; font-weight:700; margin-bottom:6px; color:var(--text-muted);">タグで絞り込む:</div>
+        <div id="sidebarTagChips" class="chip-container"></div>
     </div>
 
     <div class="sidebar-section">
         <div class="sidebar-title">学習進捗・習慣</div>
         <div id="statsBox" style="font-size:11px; color:var(--text-muted); line-height:1.6; margin-bottom:10px;">日記総数：0篇</div>
         
-        <div style="font-size:11px; font-weight:700; margin-bottom:4px;">習慣の芝生 (過去28日間)</div>
+        <div style="font-size:11px; font-weight:700; margin-bottom:4px;">自然な表現の芝生 (過去28日間)</div>
         <div id="grassGrid" class="grass-container"></div>
         
         <div style="font-size:11px; font-weight:700; margin-top:12px; margin-bottom:4px; display:flex; justify-content:space-between;">
@@ -294,6 +338,13 @@
 
         <div style="font-size:11px; font-weight:700; margin-top:12px; margin-bottom:4px;">Claude 添削エラー率推移</div>
         <div id="errorRateText" style="font-size:11px; color:var(--text-muted);">データが足りません</div>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-title">感情の気象観測</div>
+        <button class="btn-base post-btn" style="width:100%; font-size:11px; padding:6px;" onclick="triggerMoodRaindropAnimation()">感情を統計する</button>
+        <canvas id="moodCanvas" style="width:100%; height:120px; display:none; background:transparent; margin-top:8px; border-radius:10px;"></canvas>
+        <div id="moodChartResult" class="mood-chart-result-box"></div>
     </div>
 
     <div class="sidebar-section">
@@ -350,7 +401,7 @@
     </div>
 
     <div class="sidebar-section" style="border:none; margin-top:auto; padding-top:20px; text-align:center; font-size:11px; color:var(--text-muted);">
-        バージョン：v3.0.0<br>最終更新：2026/06/16
+        バージョン：v3.1.0<br>最終更新：2026/06/18
     </div>
 </div>
 
@@ -366,6 +417,20 @@
         <textarea id="postInput" placeholder="今日の日記を日本語で書いてみましょう！..." oninput="autoSaveDraft()"></textarea>
         <div id="weatherDisplay" class="weather-status">位置情報と天気を取得中...</div>
         
+        <div class="selector-row">
+            <div class="selector-label">今日の感情</div>
+            <div class="chip-container">
+                <div class="mood-chip" data-mood="晴れ" onclick="selectMood('晴れ')">晴れ</div>
+                <div class="mood-chip" data-mood="くもり" onclick="selectMood('くもり')">くもり</div>
+                <div class="mood-chip" data-mood="雨" onclick="selectMood('雨')">雨</div>
+                <div class="mood-chip" data-mood="風" onclick="selectMood('風')">風</div>
+            </div>
+        </div>
+        <div class="selector-row" style="margin-bottom:16px;">
+            <div class="selector-label">タグ選択 (複数可)</div>
+            <div id="postTagChips" class="chip-container"></div>
+        </div>
+
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:12px; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:4px;">
                 <span style="font-size:11px; color:var(--text-muted);">投稿日:</span>
@@ -386,8 +451,17 @@
     let USER_AVATAR = localStorage.getItem("diary_user_avatar") || "🌷";
     let currentWeatherData = "位置情報オフ";
     let expandedStates = {};
+    
+    // 記憶發文區當下所點選的心情與標籤群
+    let selectedMoodStr = "";
+    let selectedTagsArr = [];
+    
+    // 側邊欄複選搜尋標籤群
+    let searchSelectedTags = [];
 
-    // 內建預設與自訂色版
+    // 預設標籤群清單
+    const AVAILABLE_TAGS = ["学習", "日常", "読書", "植栽", "仕事", "旅行"];
+
     let savedPalettes = JSON.parse(localStorage.getItem("diary_saved_palettes")) || {
         "現行手帳米": { bg: "#FDF8F4", card: "#ffffff", text: "#333333", muted: "#7e7e7e", border: "#E2E9F3", theme: "#FFA26D", subtheme: "#D2E767", grass: "#2ECC71", avatargi: "#C0E0FF" },
         "深夜ネオン": { bg: "#1A202C", card: "#2D3748", text: "#FAF7F8", muted: "#A0AEC0", border: "#4A5568", theme: "#C44BD1", subtheme: "#A9C961", grass: "#00F5D4", avatargi: "#3269A0" }
@@ -403,6 +477,7 @@
         initThemeInputFields();
         renderSavedPalettesList();
         
+        initTagChipsUI();
         renderPosts();
         checkDraft();
         getLiveWeatherAndLocation();
@@ -413,37 +488,89 @@
         });
     });
 
-    // 獨立當日小語與提示字定錨
-    function updateTimePlaceholderAndGreeting() {
-        const now = new Date();
-        const hr = now.getHours();
-        const m = now.getMonth() + 1;
-        const d = now.getDate();
+    function initTagChipsUI() {
+        const postContainer = document.getElementById("postTagChips");
+        postContainer.innerHTML = "";
+        AVAILABLE_TAGS.forEach(t => {
+            const chip = document.createElement("div");
+            chip.className = "tag-chip";
+            chip.innerText = `#${t}`;
+            chip.onclick = () => togglePostTag(t, chip);
+            postContainer.appendChild(chip);
+        });
+
+        const sidebarContainer = document.getElementById("sidebarTagChips");
+        sidebarContainer.innerHTML = "";
+        AVAILABLE_TAGS.forEach(t => {
+            const chip = document.createElement("div");
+            chip.className = "tag-chip";
+            chip.innerText = `#${t}`;
+            chip.onclick = () => toggleSidebarSearchTag(t, chip);
+            sidebarContainer.appendChild(chip);
+        });
+    }
+
+    function selectMood(mood) {
+        selectedMoodStr = (selectedMoodStr === mood) ? "" : mood;
+        document.querySelectorAll(".mood-chip").forEach(chip => {
+            if (chip.getAttribute("data-mood") === selectedMoodStr) chip.classList.add("active");
+            else chip.classList.remove("active");
+        });
+    }
+
+    function togglePostTag(tag, element) {
+        if (selectedTagsArr.includes(tag)) {
+            selectedTagsArr = selectedTagsArr.filter(x => x !== tag);
+            element.classList.remove("active");
+        } else {
+            selectedTagsArr.push(tag);
+            element.classList.add("active");
+        }
+    }
+
+    function toggleSidebarSearchTag(tag, element) {
+        if (searchSelectedTags.includes(tag)) {
+            searchSelectedTags = searchSelectedTags.filter(x => x !== tag);
+            element.classList.remove("active");
+        } else {
+            searchSelectedTags.push(tag);
+            element.classList.add("active");
+        }
+        executeCombinedSearch();
+    }
+
+    function searchPostsByKeyword(val) {
+        executeCombinedSearch();
+    }
+
+    // 標籤複選與關鍵字智慧融合聯集搜尋
+    function executeCombinedSearch() {
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts") || "[]");
+        const keyword = document.getElementById("sidebarSearch").value.toLowerCase().trim();
         
+        const filtered = posts.filter(p => {
+            const matchKeyword = keyword ? p.content.toLowerCase().includes(keyword) : true;
+            const matchTags = searchSelectedTags.length > 0 
+                ? searchSelectedTags.every(t => p.tags && p.tags.includes(t)) 
+                : true;
+            return matchKeyword && matchTags;
+        });
+        renderFeedList(filtered);
+    }
+
+    function updateTimePlaceholderAndGreeting() {
+        const now = new Date(); const hr = now.getHours(); const m = now.getMonth() + 1; const d = now.getDate();
         let greeting = "こんにちは！今日の一言から始めましょう。";
         let placeholder = "今日の日記を日本語で書いてみましょう！...";
-
-        if (hr >= 5 && hr < 11) {
-            greeting = "おはようございます！今日も心地よい一日を。";
-            placeholder = "朝の新鮮な気持ちを日本語にしてみませんか？...";
-        } else if (hr >= 18 || hr < 5) {
-            greeting = "今日もお疲れ様でした。夜の静かなつぶやきを。";
-            placeholder = "今日一日の出来事や感じたことを、夜の終わりにどうぞ。...";
-        }
-
-        if (m === 6) {
-            greeting += " 梅雨の季節ですね。お部屋でゆっくり日記を書きましょう。";
-        } else if (m === 7 || m === 8) {
-            greeting += " 本日は猛暑が予想されます。熱中症に気をつけて。";
-        }
-        
+        if (hr >= 5 && hr < 11) { greeting = "おはようございます！今日も心地よい一日を。"; placeholder = "朝の新鮮な気持ちを日本語にしてみませんか？..."; }
+        else if (hr >= 18 || hr < 5) { greeting = "今日もお疲れ様でした。夜の静かなつぶやきを。"; placeholder = "今日一日の出来事や感じたことを、夜の終わりにどうぞ。..."; }
+        if (m === 6) greeting += " 梅雨の季節ですね。お部屋でゆっくり日記を書きましょう。";
+        else if (m === 7 || m === 8) greeting += " 本日は猛暑が予想されます。熱中症に気をつけて。";
         if (m === 1 && d === 1) greeting = "明けましておめでとうございます！今年の目標は？";
-
         document.getElementById("greetingBanner").innerText = greeting;
         document.getElementById("postInput").placeholder = placeholder;
     }
 
-    // 智慧色版控制項初始化
     function initThemeInputFields() {
         const t = savedPalettes[currentPaletteName] || savedPalettes["現行手帳米"];
         document.getElementById("cpBg").value = t.bg;
@@ -456,7 +583,7 @@
     }
 
     function updateLiveTheme() {
-        const palette = {
+        const p = {
             bg: document.getElementById("cpBg").value,
             card: document.getElementById("cpCard").value,
             text: document.getElementById("cpText").value,
@@ -467,7 +594,7 @@
             grass: document.getElementById("cpGrass").value,
             avatargi: document.getElementById("cpAvatarBg").value
         };
-        injectVars(palette);
+        injectVars(p);
     }
 
     function injectVars(p) {
@@ -483,10 +610,9 @@
                 --color-grass: ${p.grass};
                 --color-avatar-bg: ${p.avatargi || '#C0E0FF'};
                 --color-claude: #D97756;
-                
                 --grass-level-0: ${p.border};
-                --grass-level-1: ${p.grass}4D;
-                --grass-level-2: ${p.grass}99;
+                --grass-level-1: ${p.grass}33;
+                --grass-level-2: ${p.grass}80;
                 --grass-level-3: ${p.grass};
             }
         `;
@@ -503,59 +629,40 @@
     function saveCurrentPalette() {
         const name = document.getElementById("newPaletteName").value.trim();
         if (!name) { alert("パレット名を入力してください。"); return; }
-        
         savedPalettes[name] = {
-            bg: document.getElementById("cpBg").value,
-            card: document.getElementById("cpCard").value,
-            text: document.getElementById("cpText").value,
+            bg: document.getElementById("cpBg").value, card: document.getElementById("cpCard").value, text: document.getElementById("cpText").value,
             muted: isDarkColor(document.getElementById("cpCard").value) ? "#A0AEC0" : "#7e7e7e",
             border: isDarkColor(document.getElementById("cpBg").value) ? "#4A5568" : "#E2E9F3",
-            theme: document.getElementById("cpTheme").value,
-            subtheme: document.getElementById("cpSubtheme").value,
-            grass: document.getElementById("cpGrass").value,
+            theme: document.getElementById("cpTheme").value, subtheme: document.getElementById("cpSubtheme").value, grass: document.getElementById("cpGrass").value,
             avatargi: document.getElementById("cpAvatarBg").value
         };
-        
         localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
         document.getElementById("newPaletteName").value = "";
-        applyTheme(name);
-        renderSavedPalettesList();
+        applyTheme(name); renderSavedPalettesList();
     }
 
     function deletePalette(e, name) {
-        e.stopPropagation();
-        if (name === "現行手帳米" || name === "深夜ネオン") { alert("プリセットは削除できません。"); return; }
+        e.stopPropagation(); if (name === "現行手帳米" || name === "深夜ネオン") { alert("プリセットは削除できません。"); return; }
         if (confirm(`パレット「${name}」を削除しますか？`)) {
-            delete savedPalettes[name];
-            localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
+            delete savedPalettes[name]; localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
             if (currentPaletteName === name) applyTheme("現行手帳米");
-            renderSavedPalettesList();
-            initThemeInputFields();
+            renderSavedPalettesList(); initThemeInputFields();
         }
     }
 
     function renderSavedPalettesList() {
-        const box = document.getElementById("savedPalettesList");
-        box.innerHTML = "";
+        const box = document.getElementById("savedPalettesList"); box.innerHTML = "";
         Object.keys(savedPalettes).forEach(name => {
             const row = document.createElement("div");
             row.style = `display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; border:1px solid var(--border-color);`;
             if (name === currentPaletteName) row.style.borderColor = "var(--color-theme)";
             row.onclick = () => { applyTheme(name); initThemeInputFields(); renderSavedPalettesList(); };
-            
             let delBtn = (name!=="現行手帳米" && name!=="深夜ネオン") ? `<span style="color:#ff5c5c;font-weight:bold;padding:0 4px;" onclick="deletePalette(event, '${name}')">×</span>` : "";
-            row.innerHTML = `<span>🎨 ${name}</span>${delBtn}`;
-            box.appendChild(row);
+            row.innerHTML = `<span>🎨 ${name}</span>${delBtn}`; box.appendChild(row);
         });
     }
 
-    function isDarkColor(hex) {
-        if(!hex || hex.length<7) return false;
-        const r = parseInt(hex.substr(1,2),16);
-        const g = parseInt(hex.substr(3,2),16);
-        const b = parseInt(hex.substr(5,2),16);
-        return (r*0.299 + g*0.587 + b*0.114) < 128;
-    }
+    function isDarkColor(hex) { if(!hex || hex.length<7) return false; const r = parseInt(hex.substr(1,2),16); const g = parseInt(hex.substr(3,2),16); const b = parseInt(hex.substr(5,2),16); return (r*0.299 + g*0.587 + b*0.114) < 128; }
 
     function toggleSidebar(open) {
         document.getElementById("sidebar").classList.toggle("open", open);
@@ -563,30 +670,23 @@
         if(open) { updateStatsAndHabits(); updateTimePlaceholderAndGreeting(); }
     }
 
-    // 連動儲存用戶名稱、大頭貼與專屬底色
     function saveUserProfile() {
         const nameVal = document.getElementById("settingsUsername").value.trim();
         const avatarVal = document.getElementById("settingsAvatar").value.trim();
-        
         if(nameVal) { USER_NAME = nameVal; localStorage.setItem("diary_username", nameVal); }
         if(avatarVal) { USER_AVATAR = avatarVal; localStorage.setItem("diary_user_avatar", avatarVal); }
-        
         if(savedPalettes[currentPaletteName]) {
             savedPalettes[currentPaletteName].avatargi = document.getElementById("cpAvatarBg").value;
-            localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes));
-            updateLiveTheme();
+            localStorage.setItem("diary_saved_palettes", JSON.stringify(savedPalettes)); updateLiveTheme();
         }
         renderPosts();
     }
 
-    // 數據中心與三大指標追蹤
+    // 數據統計、草皮開花渲染引擎
     function updateStatsAndHabits() {
         const posts = JSON.parse(localStorage.getItem("jp_sns_posts") || "[]");
         document.getElementById("statsBox").innerHTML = `日記総数：${posts.length} 篇`;
         
-        // 修正標籤亂碼
-        document.getElementById("ratio-label-quote").innerText = "引用リンク";
-
         const grassGrid = document.getElementById("grassGrid");
         grassGrid.innerHTML = "";
         const nowTime = new Date();
@@ -595,6 +695,7 @@
         let hourDistribution = { morning: 0, afternoon: 0, night: 0 };
         let errorTracking = [];
 
+        // 過去 28 天草皮走查
         for (let i = 27; i >= 0; i--) {
             const d = new Date(); d.setDate(nowTime.getDate() - i);
             const dateStr = d.toISOString().split('T')[0];
@@ -602,30 +703,41 @@
             const endOfDay = new Date(dateStr).setHours(23,59,59,999);
             
             const dayPosts = posts.filter(p => p.id >= startOfDay && p.id <= endOfDay);
-            const count = dayPosts.length;
+            // 當天內被判定為 NATURAL_EXPRESSION 的日記數
+            const naturalCount = dayPosts.filter(p => p.isNaturalCertified).length;
             
             let level = 0;
-            if (count === 1) level = 1;
-            else if (count === 2) level = 2;
-            else if (count >= 3) level = 3;
+            if (dayPosts.length === 1) level = 1;
+            else if (dayPosts.length === 2) level = 2;
+            else if (dayPosts.length >= 3) level = 3;
 
             const cell = document.createElement("div");
             cell.className = "grass-cell";
             cell.style.backgroundColor = `var(--grass-level-${level})`;
-            cell.setAttribute("data-tooltip", `${dateStr} : ${count}篇`);
+            cell.setAttribute("data-tooltip", `${dateStr} : 投稿${dayPosts.length}篇 / 自然な表現${naturalCount}つ`);
+            
+            // 當天有幾篇趨近道地，那就在方塊中開幾朵五圓點實心花
+            if (naturalCount > 0) {
+                const cluster = document.createElement("div");
+                cluster.className = "flower-cluster";
+                for (let f = 0; f < Math.min(naturalCount, 4); f++) {
+                    const daisy = document.createElement("div");
+                    daisy.className = "mini-daisy";
+                    cluster.appendChild(daisy);
+                }
+                cell.appendChild(cluster);
+            }
             grassGrid.appendChild(cell);
         }
 
         posts.forEach(p => {
             if (p.quoteUrl && p.quoteUrl.trim()) quoteCount++; else pureCount++;
-
             if (p.time && p.time.includes(" ")) {
                 const hh = parseInt(p.time.split(" ")[1].split(":")[0]);
                 if (hh >= 5 && hh < 11) hourDistribution.morning++;
                 else if (hh >= 11 && hh < 18) hourDistribution.afternoon++;
                 else hourDistribution.night++;
             }
-
             if (p.aiComments && p.aiComments.claude) {
                 const matches = p.aiComments.claude.match(/句[①-⑩]/g);
                 errorTracking.push({ id: p.id, errs: matches ? matches.length : 0 });
@@ -639,34 +751,120 @@
             document.getElementById("ratioQuote").style.width = `${qPct}%`;
             document.getElementById("ratioPure").style.width = `${pPct}%`;
             document.getElementById("ratioText").innerText = `${qPct}% : ${pPct}%`;
-        } else {
-            document.getElementById("ratioText").innerText = "0% : 0%";
-        }
+        } else { document.getElementById("ratioText").innerText = "0% : 0%"; }
 
         let maxPeriod = "night";
         if (hourDistribution.morning > hourDistribution.afternoon && hourDistribution.morning > hourDistribution.night) maxPeriod = "morning";
         if (hourDistribution.afternoon > hourDistribution.morning && hourDistribution.afternoon > hourDistribution.night) maxPeriod = "afternoon";
-        
         const periodLabels = { morning: "朝型 (5:00~11:00)", afternoon: "昼型 (11:00~18:00)", night: "夜型 (18:00~5:00)" };
         document.getElementById("timeHabitText").innerText = total > 0 ? `${periodLabels[maxPeriod]} の執筆家` : "記録収集中...";
 
         if (errorTracking.length >= 2) {
             errorTracking.sort((a,b) => a.id - a.id);
-            const recent = errorTracking.slice(-3);
-            const older = errorTracking.slice(0, -3);
+            const recent = errorTracking.slice(-3); const older = errorTracking.slice(0, -3);
             let avgRecent = recent.reduce((sum, x) => sum + x.errs, 0) / recent.length;
             let avgOlder = older.length > 0 ? (older.reduce((sum, x) => sum + x.errs, 0) / older.length) : recent[0].errs;
+            if (avgRecent < avgOlder) document.getElementById("errorRateText").innerHTML = `改善傾向 (最近の平均エラー: ${avgRecent.toFixed(1)}つ)`;
+            else if (avgRecent > avgOlder) document.getElementById("errorRateText").innerHTML = `上昇傾向 (弱点に挑戦中。平均: ${avgRecent.toFixed(1)}つ)`;
+            else document.getElementById("errorRateText").innerHTML = `安定 (平均エラー箇所数: ${avgRecent.toFixed(1)}つ)`;
+        } else { document.getElementById("errorRateText").innerText = "Claude 添削が2回以上必要です"; }
+    }
 
-            if (avgRecent < avgOlder) {
-                document.getElementById("errorRateText").innerHTML = `改善傾向 (最近の平均エラー箇所数: ${avgRecent.toFixed(1)}つ)`;
-            } else if (avgRecent > avgOlder) {
-                document.getElementById("errorRateText").innerHTML = `上昇傾向 (弱点に挑戦中。平均: ${avgRecent.toFixed(1)}つ)`;
-            } else {
-                document.getElementById("errorRateText").innerHTML = `安定 (平均エラー箇所数: ${avgRecent.toFixed(1)}つ)`;
+    // Pinterest 幾何低聚物水滴落下物理模擬統計動畫
+    function triggerMoodRaindropAnimation() {
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts") || "[]");
+        const counts = { "晴れ": 0, "くもり": 0, "雨": 0, "風": 0 };
+        let total = 0;
+        posts.forEach(p => { if(p.mood && counts[p.mood] !== undefined) { counts[p.mood]++; total++; } });
+
+        const canvas = document.getElementById("moodCanvas");
+        const resultBox = document.getElementById("moodChartResult");
+        canvas.style.display = "block"; resultBox.style.display = "none";
+
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width = canvas.parentElement.clientWidth * 2;
+        const H = canvas.height = 240;
+        ctx.scale(2,2);
+
+        // 心情色彩庫（對應低聚物粉嫩色）
+        const colors = { "晴れ": "#FFF4D4", "くもり": "#E3F2FD", "雨": "#E0F2F1", "風": "#F3E5F5" };
+        const borderColors = { "晴れ": "#E6D08E", "くもり": "#BBDEFB", "雨": "#B2DFDB", "風": "#E1BEE7" };
+        
+        let drops = [];
+        if (total === 0) {
+            // 無資料時隨機產生幾顆示意
+            for(let i=0; i<12; i++) {
+                const keys = Object.keys(colors); const m = keys[Math.floor(Math.random()*keys.length)];
+                drops.push({ x: Math.random()*(W/2-20)+10, y: -Math.random()*60, vy: 2+Math.random()*3, radius: 6+Math.random()*4, mood: m, bounced: 0 });
             }
         } else {
-            document.getElementById("errorRateText").innerText = "Claude 添削が2回以上必要です";
+            Object.keys(counts).forEach(m => {
+                const num = counts[m];
+                for(let i=0; i<num; i++) {
+                    drops.push({ x: Math.random()*(W/2-20)+10, y: -Math.random()*100, vy: 2+Math.random()*3, radius: 7, mood: m, bounced: 0 });
+                }
+            });
         }
+
+        let animationFrameId;
+        function draw() {
+            ctx.clearRect(0,0,W/2,H/2);
+            let allSettled = true;
+
+            drops.forEach(d => {
+                // 水滴落下物理重力加速度
+                d.vy += 0.15; d.y += d.vy;
+                const ground = (H/2) - d.radius - 4;
+                
+                // 落地反彈機制
+                if (d.y >= ground) {
+                    d.y = ground;
+                    if (d.bounced < 2) { d.vy = -d.vy * 0.4; d.bounced++; allSettled = false; } 
+                    else { d.vy = 0; }
+                } else { allSettled = false; }
+
+                // 畫出半透明立體幾何圓水滴
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+                ctx.fillStyle = colors[d.mood];
+                ctx.fill();
+                ctx.strokeStyle = borderColors[d.mood];
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+
+            if (!allSettled) {
+                animationFrameId = requestAnimationFrame(draw);
+            } else {
+                cancelAnimationFrame(animationFrameId);
+                setTimeout(() => {
+                    canvas.style.display = "none";
+                    renderMoodPieResult(counts, total);
+                }, 500);
+            }
+        }
+        draw();
+    }
+
+    function renderMoodPieResult(counts, total) {
+        const resultBox = document.getElementById("moodChartResult");
+        resultBox.innerHTML = `<div style="font-size:12px; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border-color); padding-bottom:4px;">統計結果</div>`;
+        const fillColors = { "晴れ": "#FFE082", "くもり": "#90CAF9", "雨": "#80CBC4", "風": "#CE93D8" };
+
+        Object.keys(counts).forEach(m => {
+            const count = counts[m];
+            const pct = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+            const row = document.createElement("div");
+            row.className = "mood-bar-row";
+            row.innerHTML = `
+                <span class="mood-bar-label">${m}</span>
+                <div class="mood-bar-track"><div class="mood-bar-fill" style="width:0%; background:${fillColors[m]};"></div></div>
+                <span style="width:30px; text-align:right; font-size:10px;">${pct}%</span>
+            `;
+            resultBox.appendChild(row);
+            setTimeout(() => { row.querySelector(".mood-bar-fill").style.width = `${pct}%`; }, 100);
+        });
+        resultBox.style.display = "block";
     }
 
     function autoSaveDraft() { localStorage.setItem("jp_diary_draft", document.getElementById("postInput").value); }
@@ -675,18 +873,12 @@
     function loadDraft() { document.getElementById("postInput").value = localStorage.getItem("jp_diary_draft"); }
 
     function togglePostMenu(e, postId) {
-        e.stopPropagation();
-        document.querySelectorAll(".post-menu-dropdown").forEach(el => { if(el.id !== `menu-${postId}`) el.style.display = "none"; });
-        const menu = document.getElementById(`menu-${postId}`);
-        menu.style.display = menu.style.display === "block" ? "none" : "block";
+        e.stopPropagation(); document.querySelectorAll(".post-menu-dropdown").forEach(el => { if(el.id !== `menu-${postId}`) el.style.display = "none"; });
+        const menu = document.getElementById(`menu-${postId}`); menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
 
-    // 完美拉高、全站一致化字體的日記編輯功能
     function editPost(postId) {
-        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        const target = posts.find(p => p.id === postId);
-        if(!target) return;
-        
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || []; const target = posts.find(p => p.id === postId); if(!target) return;
         const contentBox = document.getElementById(`content-${postId}`);
         contentBox.innerHTML = `
             <div class="edit-container">
@@ -700,80 +892,101 @@
     }
     
     function saveEdit(postId) {
-        const newText = document.getElementById(`textarea-${postId}`).value.trim();
-        if(!newText) return;
-        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        const idx = posts.findIndex(p => p.id === postId);
+        const newText = document.getElementById(`textarea-${postId}`).value.trim(); if(!newText) return;
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || []; const idx = posts.findIndex(p => p.id === postId);
         if(idx !== -1) { posts[idx].content = newText; localStorage.setItem("jp_sns_posts", JSON.stringify(posts)); renderPosts(); }
     }
 
     function deletePost(postId) { if(confirm("日記を削除しますか？")) { let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || []; posts = posts.filter(p => p.id !== postId); localStorage.setItem("jp_sns_posts", JSON.stringify(posts)); renderPosts(); } }
 
+    // 平滑鎖定座標、避免收合跳動優化機制
     function toggleInteractivePanel(postId) {
         const panel = document.getElementById(`panel-${postId}`);
         const btn = document.getElementById(`toggle-btn-${postId}`);
+        const postEl = btn.closest(".post");
+        
+        // 記錄收合前卡片相對視窗頂端的距離
+        const startOffset = postEl.getBoundingClientRect().top;
+        const startScrollY = window.scrollY;
+
         const isBlock = panel.style.display === "block";
         panel.style.display = isBlock ? "none" : "block";
-        btn.innerText = isBlock ? "添削・学習メモ" : "折りたたむ";
+        
+        // 重新獲取當前留言總數更新按鈕文字
+        let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const tPost = posts.find(p => p.id === postId);
+        let count = 0;
+        if(tPost && tPost.aiComments && tPost.aiComments.claude) {
+            count = tPost.aiComments.claude.split(/句[①-⑩]/).filter(x => x.trim()).length;
+            if(count === 0 && tPost.aiComments.claude.trim()) count = 1;
+        }
+        btn.innerText = isBlock ? `コメント (${count})` : "折りたたむ";
+
+        // 強制將瀏覽器視野平滑鎖定在相同的座標上
+        if (isBlock) {
+            const endOffset = postEl.getBoundingClientRect().top;
+            window.scrollTo({ top: startScrollY + (endOffset - startOffset), behavior: "instant" });
+        }
     }
 
-    function requestAICorrection(aiType, postId, rawContent) {
-        const container = document.getElementById(`comments-container-${postId}`);
-        let node = document.getElementById(`comment-${aiType}-${postId}`);
-        if (!node) {
-            node = document.createElement("div"); node.id = `comment-${aiType}-${postId}`; node.className = `comment-node`;
-            setupCommentEditing(node, postId, aiType, "", "");
-        }
-        container.insertBefore(node, container.firstChild);
-
-        const promptText = `請幫我批改以下這段日文日記。\n「${decodeURIComponent(rawContent)}」\n\n請你「嚴格遵守以下格式與文字結構」進行回覆。請先用日文順著日記內容給予一句簡短、有同理心的日常朋友關心或共鳴（例如：若內文覺得某事麻煩，請順著說「確かに面倒ですね。今は大丈夫ですか？」即可，絕對不要進行任何說教）。接著直接進行詳細批改。全程「絕對不要使用任何 Emoji 表情符號」。\n\n【回覆模板】\n（在此請用日文寫下一句順應日記內容的朋友關心與共鳴）\n\n＿＿\n批改與建議\n\n句① \n原句：（請貼上學生錯誤的原句）\n問題：（請指出錯誤或不自然的地方，如為中文直譯請特別說明）\n建議：（請給出最自然道地的日文改法）\n\n（若有多個錯誤句子，請依此類推排下去：句②、句③……）\n\n【特別要求：關於表格】\n如果你認為有需要使用表格來補充說明（例如：單字對比、動詞變化表），請務必遵守以下「防變形規則」：\n1. 最多只能有 3 個欄位（欄位過多會導致手機版畫面擠壓）。\n2. 欄位內的文字請盡量「精簡在 10 個字以內」，若有長句子請用換行分開，以確保表格在電腦與手機上皆能完美對齊不變形。`;
+    // 針對多益 900+ 程度去蕪存菁的全新 Prompt 複製器
+    function requestAICorrection(postId, rawContent) {
+        const promptText = `請批改以下日文日記：\n「${decodeURIComponent(rawContent)}」\n\n請嚴格遵守以下格式與限制進行回覆，保持溫柔且不說教的朋友語氣。全程禁止使用任何 Emoji。\n\n1. 【日文共鳴】轻轻顺着学生的日志情感，寫下一句日文日常共鳴問候（絕對不要在這裡說教）。\n\n2. 【繁中與英文雙語批改】：\n- 請使用「繁體中文」指出錯誤與語感不自然之處。\n- 說明時，請穿插「英文」進行結構、時態或語感盲點的精準對比輔助（例如對比主詞省略或 transitive/intransitive verb 的關係）。\n\n3. 【格式要求】：\n＿＿\n批改與建議\n\n句①\n原句：（錯誤原句）\n問題：（中文解釋 + 英文對比輔助）\n建議：（給出最自然道地的日文改法。標點符號請統一使用日文的「…」或「……」）\n（多個句子請用「---」分隔：句②、句③……）\n\n4. 【綜合評語表格】：\n請附上包含 [詞彙]、[文法]、[自然度]、[表達深度] 的 4x2 Markdown 表格，每欄文字請在 10 字以內。表格下方請附上一句中文的溫暖總結。\n\n5. 【道地度判定（系統關鍵字）】：\n如果你判定這篇日記的表達已經非常自然、掌握度極高，幾乎沒有中文直譯的違和感，請在回覆的「最開頭第一行」只寫下系統關鍵字：「NATURAL_EXPRESSION」（前後不加任何符號），隨後再換行開始你的日文共鳴。`;
         
         navigator.clipboard.writeText(promptText).then(() => {
-            alert("Claude用プロンプトをコピーしました！對話畫面將自動打開。");
-            window.open("https://claude.ai/", "_blank");
+            alert("Claude用プロンプトをコピーしました！"); window.open("https://claude.ai/", "_blank");
         }).catch(() => { window.open("https://claude.ai/", "_blank"); });
     }
 
-    // 放大並美化後的 Claude 回覆黏貼編輯框
-    function setupCommentEditing(node, postId, aiType, currentVal, currentUrl) {
+    // 純粹、加大尺寸之 Claude 黏貼區
+    function setupCommentEditing(node, postId, currentVal) {
         node.innerHTML = `
             <div class="comment-edit-box">
                 <div class="comment-user-bar">
                     <div class="comment-user-left"><div class="comment-avatar"></div><span class="comment-username">Claude</span></div>
                 </div>
-                <textarea id="textarea-${aiType}-${postId}" class="comment-textarea" placeholder="ここにClaudeの返信結果を貼り付け...">${currentVal}</textarea>
-                <input type="text" id="urlinput-${aiType}-${postId}" class="comment-url-input" placeholder="Claudeの会話リンクを貼り付け（任意）" value="${currentUrl}">
+                <textarea id="textarea-claude-${postId}" class="comment-textarea" placeholder="ここにClaudeの返信結果を貼り付け...">${currentVal}</textarea>
                 <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:4px;">
-                    <button class="btn-base post-btn" style="padding:4px 12px;" onclick="lockComment(${postId}, '${aiType}')">返信</button>
+                    <button class="btn-base post-btn" style="padding:4px 12px;" onclick="lockComment(${postId})">返信</button>
                 </div>
             </div>
         `;
     }
 
-    function lockComment(postId, aiType) {
-        const text = document.getElementById(`textarea-${aiType}-${postId}`).value.trim();
-        const url = document.getElementById(`urlinput-${aiType}-${postId}`).value.trim();
-        if(!text) return;
+    // 核心重構：儲存時自動「切碎長篇大論為多則對話留言」引擎
+    function lockComment(postId) {
+        const fullText = document.getElementById(`textarea-claude-${postId}`).value.trim();
+        if(!fullText) return;
         
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         const idx = posts.findIndex(p => p.id === postId);
         if(idx !== -1) {
-            if(!posts[idx].aiComments) posts[idx].aiComments = {}; posts[idx].aiComments[aiType] = text;
-            if(!posts[idx].aiUrls) posts[idx].aiUrls = {}; posts[idx].aiUrls[aiType] = url;
+            // 自動偵測關鍵字，全面自由下放道地度評判權
+            if (fullText.includes("NATURAL_EXPRESSION")) {
+                posts[idx].isNaturalCertified = true;
+            } else {
+                posts[idx].isNaturalCertified = false;
+            }
+            
+            if(!posts[idx].aiComments) posts[idx].aiComments = {};
+            posts[idx].aiComments['claude'] = fullText;
             localStorage.setItem("jp_sns_posts", JSON.stringify(posts)); renderPosts();
         }
     }
 
-    function unlockComment(postId, aiType, currentVal, currentUrl) {
-        const node = document.getElementById("comment-" + aiType + "-" + postId);
-        setupCommentEditing(node, postId, aiType, decodeURIComponent(currentVal), decodeURIComponent(currentUrl));
+    function unlockComment(postId, currentVal) {
+        const container = document.getElementById(`comments-container-${postId}`);
+        container.innerHTML = "";
+        const node = document.createElement("div");
+        node.className = "comment-node";
+        setupCommentEditing(node, postId, decodeURIComponent(currentVal));
+        container.appendChild(node);
     }
 
     function parseContentAndWrap(text, limit, keyId) {
         const hasTable = text.includes('|'); let htmlResult = text;
         if (hasTable) htmlResult = parseMarkdownTable(text);
         else htmlResult = escapeHtml(text).replace(/\n/g, '<br>');
-
         if (text.length <= limit) return { html: htmlResult, needsReadMore: false };
         const isExpanded = expandedStates[keyId] || false;
         if (isExpanded) { return { html: htmlResult, needsReadMore: true, isExpanded: true }; } 
@@ -802,27 +1015,19 @@
                 resultHtml += escapeHtml(line) + '<br>';
             }
         });
-        if (inTable) { tableHtml += '</table>'; resultHtml += tableHtml; }
-        return resultHtml;
-    }
-
-    function searchPosts(keyword) {
-        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
-        const k = keyword.toLowerCase().trim(); if(!k) { renderPosts(); return; }
-        const filtered = posts.filter(p => p.content.toLowerCase().includes(k)); renderFeedList(filtered);
+        if (inTable) { tableHtml += '</table>'; resultHtml += tableHtml; } return resultHtml;
     }
 
     function generateSummary() {
         const start = document.getElementById("filterStart").value; const end = document.getElementById("filterEnd").value;
         if (!start || !end) { alert("日付を選択してください。"); return; }
-        const posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
+        const posts = JSON.parse(localStorage.getItem("jp_sns_posts") || "[]");
         const startTime = new Date(start).setHours(0,0,0,0); const endTime = new Date(end).setHours(23,59,59,999);
         const filtered = posts.filter(p => p.id >= startTime && p.id <= endTime);
-
         const box = document.getElementById("summaryBox"); const content = document.getElementById("summaryContent");
         if (filtered.length === 0) { content.innerText = "指定期間内にデータがありません。"; box.style.display = "block"; return; }
 
-        let txt = `以下是我在 ${start} ~ ${end} 期間寫日文日記時被批改的紀錄。請幫我分析我最常犯的文法錯誤、單字誤用或中文直譯盲點，並用繁體中文條列指出 3 個我需要特別注意的「核心誤區」，最後提供各 1 個針對這些弱點的練習建議。絕對不要說教。\n\n紀錄如下：\n`;
+        let txt = `以下是我在 ${start} ~ ${end} 期間寫日文日記時被批改的紀錄。請幫我分析我最常犯的文法錯誤、單字誤用或中文直譯盲點，並用繁體中文條列指出 3 個我需要特別注意的「核心誤區」，最後提供各 1 個針對 these weaknesses 的練習建議。絕對不要說教。\n\n紀錄如下：\n`;
         filtered.forEach((p, idx) => {
             txt += `--- 日記日期：${p.time.split(" ")[0]} ---\n【日記本文】：\n${p.content}\n`;
             if (p.aiComments && p.aiComments.claude) { txt += `【Claude 批改內容】:\n${p.aiComments.claude}\n`; }
@@ -838,63 +1043,50 @@
             try {
                 const lat = pos.coords.latitude; const lon = pos.coords.longitude;
                 const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                const weatherData = await weatherRes.json();
-                const temp = Math.round(weatherData.current_weather.temperature);
+                const weatherData = await weatherRes.json(); const temp = Math.round(weatherData.current_weather.temperature);
                 const weatherText = translateWeatherCode(weatherData.current_weather.weathercode);
                 const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ja`);
                 const geoData = await geoRes.json(); const addr = geoData.address;
                 const locationName = addr.city || addr.town || addr.suburb || "現在地";
-                currentWeatherData = `${weatherText} ${temp}°C / ${locationName}`;
-                document.getElementById("weatherDisplay").innerText = currentWeatherData;
+                currentWeatherData = `${weatherText} ${temp}°C / ${locationName}`; document.getElementById("weatherDisplay").innerText = currentWeatherData;
             } catch (e) { document.getElementById("weatherDisplay").innerText = "位置情報オフ"; }
         }, () => { document.getElementById("weatherDisplay").innerText = "位置情報オフ"; });
     }
 
     function translateWeatherCode(code) {
-        if (code === 0) return "晴れ";
-        if ([1, 2, 3].includes(code)) return "晴れのちくもり";
-        if ([45, 48].includes(code)) return "霧";
-        if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return "雨";
-        if ([71, 73, 75, 85, 86].includes(code)) return "雪";
-        return "くもり";
+        if (code === 0) return "晴れ"; if ([1, 2, 3].includes(code)) return "晴れのちくもり"; if ([45, 48].includes(code)) return "霧";
+        if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return "雨"; if ([71, 73, 75, 85, 86].includes(code)) return "雪"; return "くもり";
     }
 
-    // 核心重構：發文時「自動精準抓取 URL 網址並轉化為引用卡」引擎
     function addPost() {
-        let content = document.getElementById("postInput").value.trim();
-        if (!content) return;
-        const targetDateVal = document.getElementById("postTargetDate").value;
-        const todayStr = new Date().toISOString().split('T')[0];
+        let content = document.getElementById("postInput").value.trim(); if (!content) return;
+        const targetDateVal = document.getElementById("postTargetDate").value; const todayStr = new Date().toISOString().split('T')[0];
         
-        // 使用正則匹配網址
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
-        const foundUrls = content.match(urlRegex);
-        let quoteUrl = "";
-        
-        if (foundUrls && foundUrls.length > 0) {
-            quoteUrl = foundUrls[0];
-            // 從日記內文中把網址抽離乾淨
-            content = content.replace(quoteUrl, "").trim();
-        }
+        const urlRegex = /(https?:\/\/[^\s]+)/g; const foundUrls = content.match(urlRegex); let quoteUrl = "";
+        if (foundUrls && foundUrls.length > 0) { quoteUrl = foundUrls[0]; content = content.replace(quoteUrl, "").trim(); }
 
         let finalId = Date.now(); let timestamp = ""; let weatherInfo = currentWeatherData;
         if (targetDateVal === todayStr) {
             const now = new Date();
             timestamp = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         } else {
-            const parts = targetDateVal.split('-');
-            timestamp = `${parts[1]}/${parts[2]} 00:00`;
-            const customDate = new Date(targetDateVal); customDate.setHours(23, 59, 59, 999);
-            finalId = customDate.getTime(); weatherInfo = "過去の記録"; 
+            const parts = targetDateVal.split('-'); timestamp = `${parts[1]}/${parts[2]} 00:00`;
+            const customDate = new Date(targetDateVal); customDate.setHours(23, 59, 59, 999); finalId = customDate.getTime(); weatherInfo = "過去の記録"; 
         }
 
-        const post = { id: finalId, time: timestamp, weather: weatherInfo, content: content, quoteUrl: quoteUrl, aiComments: {}, aiUrls: {} };
+        const post = { 
+            id: finalId, time: timestamp, weather: weatherInfo, content: content, quoteUrl: quoteUrl, 
+            mood: selectedMoodStr, tags: [...selectedTagsArr], isNaturalCertified: false, aiComments: {} 
+        };
+        
         let posts = JSON.parse(localStorage.getItem("jp_sns_posts")) || [];
         posts.push(post); posts.sort((a, b) => b.id - a.id);
         localStorage.setItem("jp_sns_posts", JSON.stringify(posts));
 
         localStorage.removeItem("jp_diary_draft");
         document.getElementById("postInput").value = "";
+        selectedMoodStr = ""; selectedTagsArr = [];
+        document.querySelectorAll(".mood-chip, .tag-chip").forEach(c => c.classList.remove("active"));
         document.getElementById("postTargetDate").value = todayStr;
         checkDraft(); renderPosts();
     }
@@ -908,11 +1100,16 @@
         const feed = document.getElementById("postFeed"); feed.innerHTML = "";
 
         posts.forEach(post => {
-            const postEl = document.createElement("div"); postEl.className = "post";
+            const postEl = document.createElement("div"); 
+            postEl.className = "post";
+            
+            // 如果判定為趨近道地，當場注入雙線與智慧呼吸光暈邊框
+            if (post.isNaturalCertified) { postEl.classList.add("natural-certified"); }
+
             const weatherString = post.weather ? `<span>${escapeHtml(post.weather)}</span>` : "";
+            const moodString = post.mood ? `<span style="font-weight:700; color:var(--color-theme);">/ ${escapeHtml(post.mood)}</span>` : "";
             const encodedContent = encodeURIComponent(post.content);
 
-            // 智慧網域判斷引用小卡
             let quoteHtml = "";
             if (post.quoteUrl && post.quoteUrl.trim()) {
                 let domainLabel = "WEB リンク";
@@ -922,12 +1119,13 @@
                     else if (u.hostname.includes("news")) domainLabel = "NEWS リンク";
                 } catch(e) {}
                 let displayUrl = post.quoteUrl.length > 40 ? post.quoteUrl.substring(0, 40) + "..." : post.quoteUrl;
-                quoteHtml = `
-                    <div class="quote-badge">
-                        <span class="quote-title">${domainLabel}</span>
-                        <a href="${escapeHtml(post.quoteUrl)}" target="_blank">${escapeHtml(displayUrl)}</a>
-                    </div>
-                `;
+                quoteHtml = `<div class="quote-badge"><span class="quote-title">${domainLabel}</span><a href="${escapeHtml(post.quoteUrl)}" target="_blank">${escapeHtml(displayUrl)}</a></div>`;
+            }
+
+            // 晶片渲染
+            let tagsHtml = "";
+            if (post.tags && post.tags.length > 0) {
+                tagsHtml = `<div class="card-tags">` + post.tags.map(t => `<span class="card-tag-item">#${escapeHtml(t)}</span>`).join("") + `</div>`;
             }
 
             const origKey = `p-${post.id}`; const origParse = parseContentAndWrap(post.content, 200, origKey);
@@ -937,29 +1135,38 @@
                 origBtnHtml = `<button id="readmore-${origKey}" class="readmore-btn" onclick="handleExpandToggle('${origKey}')">${label}</button>`;
             }
 
-            let commentsHtml = "";
-            const val = post.aiComments ? (post.aiComments['claude'] || "") : "";
-            const chatUrl = post.aiUrls ? (post.aiUrls['claude'] || "") : "";
+            // 核心演算法：將舊資料與新貼上的長留言，「自動切碎成美麗的獨立對話泡泡牆」
+            let commentsBlockHtml = "";
+            let commentCount = 0;
+            const fullCommentText = post.aiComments ? (post.aiComments['claude'] || "") : "";
             
-            if (val) {
-                const urlBtnHtml = chatUrl ? `<a href="${escapeHtml(chatUrl)}" target="_blank" class="ai-chat-link-claude">会話をみる</a>` : "";
-                const commKey = `c-claude-${post.id}`; const commParse = parseContentAndWrap(val, 200, commKey);
-                let commBtnHtml = "";
-                if (commParse.needsReadMore) {
-                    const btnLabel = commParse.isExpanded ? "折りたたむ" : "... 続きを読む";
-                    commBtnHtml = `<div><button id="readmore-${commKey}" class="readmore-btn" onclick="handleExpandToggle('${commKey}')">${btnLabel}</button></div>`;
-                }
+            if (fullCommentText) {
+                // 以 句①~句⑩ 或 自訂分隔符號 --- 進行智慧切碎
+                let segments = fullCommentText.split(/(?=句[①-⑩])|(?=＿＿)|---/);
+                // 去除乾淨的空行與無關字串
+                segments = segments.map(s => s.replace("NATURAL_EXPRESSION", "").trim()).filter(s => s.length > 0);
+                commentCount = segments.length;
 
-                commentsHtml = `
-                    <div id="comment-claude-${post.id}" class="comment-node">
-                        <div class="comment-user-bar">
-                            <div class="comment-user-left"><div class="comment-avatar"></div><span class="comment-username">Claude</span>${urlBtnHtml}</div>
-                            <span style="font-size:11px; cursor:pointer; color:var(--text-muted);" onclick="unlockComment(${post.id}, 'claude', \`${encodeURIComponent(val)}\`, \`${encodeURIComponent(chatUrl)}\`)">編集</span>
+                segments.forEach((seg, sIdx) => {
+                    const commKey = `c-claude-${post.id}-${sIdx}`;
+                    const commParse = parseContentAndWrap(seg, 220, commKey);
+                    let commBtnHtml = "";
+                    if (commParse.needsReadMore) {
+                        const btnLabel = commParse.isExpanded ? "折りたたむ" : "... 続きを読む";
+                        commBtnHtml = `<div><button id="readmore-${commKey}" class="readmore-btn" onclick="handleExpandToggle('${commKey}')">${btnLabel}</button></div>`;
+                    }
+
+                    commentsBlockHtml += `
+                        <div class="comment-node" style="margin-bottom:8px;">
+                            <div class="comment-user-bar">
+                                <div class="comment-user-left"><div class="comment-avatar"></div><span class="comment-username">Claude</span></div>
+                                ${sIdx === 0 ? `<span style="font-size:11px; cursor:pointer; color:var(--text-muted);" onclick="unlockComment(${post.id}, \`${encodeURIComponent(fullCommentText)}\`)">編集</span>` : ""}
+                            </div>
+                            <div class="comment-content">${commParse.html}</div>
+                            ${commBtnHtml}
                         </div>
-                        <div class="comment-content">${commParse.html}</div>
-                        ${commBtnHtml}
-                    </div>
-                `;
+                    `;
+                });
             }
 
             postEl.innerHTML = `
@@ -975,24 +1182,35 @@
                     <div class="avatar"><span>${escapeHtml(USER_AVATAR)}</span></div>
                     <div style="display:flex; flex-direction:column;">
                         <span class="username">${escapeHtml(USER_NAME)}</span>
-                        <div class="meta-info"><span>${post.time}</span>${weatherString}</div>
+                        <div class="meta-info"><span>${post.time}</span>${weatherString}${moodString}</div>
                     </div>
                 </div>
                 
                 ${quoteHtml}
                 <div class="post-content" id="content-${post.id}">${origParse.html}</div>
                 ${origBtnHtml}
+                ${tagsHtml}
                 
-                <div style="margin-top:4px;">
-                    <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">添削・学習メモ</button>
+                <div style="margin-top:8px;">
+                    <button id="toggle-btn-${post.id}" class="comment-style-toggle" onclick="toggleInteractivePanel(${post.id})">コメント (${commentCount})</button>
                 </div>
 
                 <div id="panel-${post.id}" class="interactive-panel">
                     <div class="ai-select-row">
-                        <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection('claude', ${post.id}, '${encodedContent}')">Claudeに添削を頼む (プロンプトコピー)</button>
+                        <button class="ai-mini-btn ai-btn-claude" onclick="requestAICorrection(${post.id}, '${encodedContent}')">Claudeに添削を頼む (プロンプトコピー)</button>
                     </div>
                     <div id="comments-container-${post.id}" class="comments-container">
-                        ${commentsHtml}
+                        ${commentsBlockHtml ? commentsBlockHtml : `
+                            <div class="comment-node">
+                                <div class="comment-user-bar">
+                                    <div class="comment-user-left"><div class="comment-avatar"></div><span class="comment-username">Claude</span></div>
+                                </div>
+                                <textarea id="textarea-claude-${post.id}" class="comment-textarea" placeholder="ここにClaudeの返信結果を貼り付け..."></textarea>
+                                <div style="display:flex; justify-content:flex-end; margin-top:4px;">
+                                    <button class="btn-base post-btn" style="padding:4px 12px;" onclick="lockComment(${post.id})">返信</button>
+                                </div>
+                            </div>
+                        `}
                     </div>
                 </div>
             `;
@@ -1012,7 +1230,7 @@
             try {
                 const imported = JSON.parse(e.target.result);
                 if (Array.isArray(imported)) {
-                    if (confirm("復元すると現在の記録が上書きされます。よろしいですか？")) { localStorage.setItem("jp_sns_posts", JSON.stringify(imported)); renderPosts(); alert("復元が完了しました！"); }
+                    if (confirm("復元すると現在の記錄が上書きされます。よろしいですか？")) { localStorage.setItem("jp_sns_posts", JSON.stringify(imported)); renderPosts(); alert("復元が完了しました！"); }
                 } else { alert("形式が正しくありません。"); }
             } catch (err) { alert("失敗しました。"); }
         };
